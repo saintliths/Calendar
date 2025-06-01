@@ -7,7 +7,7 @@ import CalendarModel.IModel;
 import CalendarView.IView;
 
 /**
- * This class represents the controller implementation for the controller.
+ * This class represents the controller implementation for a calendar.
  */
 public class CalendarController implements IController {
   private Scanner in;
