@@ -48,4 +48,39 @@ public class Event {
     this.partOfSeries = partOfSeries;
   }
 
+  public String getSubject() {
+    return subject;
+  }
+
+  public LocalDateTime getStartDateTime() {
+    return startDateTime;
+  }
+
+  public LocalDateTime getEndDateTime() {
+    return endDateTime;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+
+  public String getLocation() {
+    return location;
+  }
+
+
+  public boolean isPrivate() {
+    return isPrivate;
+  }
+
+
+  public boolean isPartOfSeries() {
+    return partOfSeries;
+  }
+
+  public boolean checkEventOverlap(Object o) {
+    return false;
+  }
+
 }
