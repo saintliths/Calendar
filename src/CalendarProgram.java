@@ -5,7 +5,7 @@ import CalendarModel.IModel;
 import CalendarView.CalendarView;
 import CalendarView.IView;
 
-public class CalendarProgam {
+public class CalendarProgram {
   public static void main(String []args) {
     IModel model = new CalendarModel();
     IView view = new CalendarView(System.out);

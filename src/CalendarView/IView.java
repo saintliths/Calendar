@@ -6,6 +6,13 @@ package CalendarView;
 public interface IView {
   void showString(String s);
   void showOptions();
-  void showStringEntry();
+  void enterSubject();
+  void enterStartDate();
+  void enterStartTime();
+  void enterEndDate();
+  void enterEndTime();
+  void enterDescription();
+  void enterLocation();
+  void enterEventStatus();
   void showOptionError();
 }
