@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import CalendarModel.Event.EventBuilder;
+import CalendarModel.EventSeries.EventSeriesBuilder;
 
 public class CalendarModel implements IModel {
 
@@ -40,13 +41,12 @@ public class CalendarModel implements IModel {
 
     EventBuilder e = new EventBuilder(arg[2], startDate, startTime);
 
-    if (arg.length == 7) {
+    if (input.contains("to")) {
       String[] end = arg[6].split("T");
       LocalDate endDate = LocalDate.parse(end[0]);
       LocalTime endTime = LocalTime.parse(end[1]);
       e.endDate(endDate).endTime(endTime);
     }
-
 
     if (eventsByDate.containsKey(startDate)) {
       eventsByDate.get(startDate).add(e.build());
@@ -61,7 +61,24 @@ public class CalendarModel implements IModel {
 
   @Override
   public EventSeries createEventSeries(String input) {
+    String[] arg = input.split(" ");
+    String[] start = arg[4].split("T");
+    LocalDate startDate = LocalDate.parse(start[0]);
+    LocalTime startTime = LocalTime.parse(start[1]);
+    String recurringDays = arg[6];
+
+    EventSeriesBuilder e = new EventSeriesBuilder(arg[2], startDate, startTime)
+            .recurrenceDays(recurringDays);
+
+    if (input.contains("to")) {
+      String[] end = arg[6].split("T");
+      LocalDate endDate = LocalDate.parse(end[0]);
+      LocalTime endTime = LocalTime.parse(end[1]);
+      recurringDays = arg[8];
+      e.endDate(endDate).endTime(endTime).recurrenceDays(recurringDays);
+    }
 
 
+    return e.build();
   }
 }

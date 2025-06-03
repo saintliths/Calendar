@@ -19,7 +19,7 @@ public class EventSeries {
   private String description;
   private String location;
   private boolean isPrivate;
-  private ArrayList<DayOfWeek> recurrenceDays;  // e.g., [MONDAY, WEDNESDAY]
+  private String recurrenceDays;  // e.g., [MONDAY, WEDNESDAY]
   private int occurrenceCount;
 
   /**
@@ -36,7 +36,7 @@ public class EventSeries {
    */
   public EventSeries(String subject, LocalDate startDate, LocalTime startTime, LocalDate endDate,
                LocalTime endTime, String description, String location, boolean isPrivate,
-                     ArrayList<DayOfWeek> recurrenceDays, int occurenceCount) {
+                     String recurrenceDays, int occurrenceCount) {
     this.subject = subject;
     this.startDate = startDate;
     this.startTime = startTime;
@@ -49,48 +49,125 @@ public class EventSeries {
     this.occurrenceCount = occurrenceCount;
   }
 
-  public static EventSeriesBuilder getBuilder() {
-    return new EventSeriesBuilder();
+  /**
+   *
+   * @return
+   */
+  public EventSeriesBuilder getBuilder() {
+    return new EventSeriesBuilder(this.subject, this.startDate, this.startTime);
   }
 
+  /**
+   *
+   */
   static class EventSeriesBuilder {
-    private LocalTime endDate;
+    private String subject;
+    private LocalDate startDate;
+    private LocalTime startTime;
+    private LocalDate endDate;
+    private LocalTime endTime;
     private String description;
     private String location;
     private boolean isPrivate;
+    private String recurrenceDays;  // e.g., [MONDAY, WEDNESDAY]
     private int occurrenceCount;
 
-    public EventSeriesBuilder() {
-      this.endDate = LocalTime.MIDNIGHT;
+    /**
+     *
+     * @param subject
+     * @param startDate
+     * @param startTime
+     */
+    public EventSeriesBuilder(String subject, LocalDate startDate, LocalTime startTime) {
+      this.subject = subject;
+      this.startDate = startDate;
+      this.startTime = startTime;
+      this.endDate = startDate;
+      this.recurrenceDays = "";
+      this.occurrenceCount = 0;
+      this.endTime = LocalTime.MIDNIGHT;
       this.description = "";
       this.location = "";
       this.isPrivate = false;
-      this.occurrenceCount = 0;
     }
 
-    public EventSeriesBuilder endDate(LocalTime e) {
+    /**
+     *
+     * @param e
+     * @return
+     */
+    public EventSeriesBuilder endDate(LocalDate e) {
       this.endDate = e;
       return this;
     }
 
+    /**
+     *
+     * @param e
+     * @return
+     */
+    public EventSeriesBuilder endTime(LocalTime e) {
+      this.endTime = e;
+      return this;
+    }
+
+    /**
+     *
+     * @param d
+     * @return
+     */
     public EventSeriesBuilder description(String d) {
       this.description = d;
       return this;
     }
 
+    /**
+     *
+     * @param l
+     * @return
+     */
     public EventSeriesBuilder location(String l) {
       this.location = l;
       return this;
     }
 
+    /**
+     *
+     * @param p
+     * @return
+     */
     public EventSeriesBuilder isPrivate(boolean p) {
       this.isPrivate = p;
       return this;
     }
 
-    public EventSeriesBuilder occurenceCount(int n) {
-      this.occurrenceCount = n;
+    /**
+     *
+     * @param r
+     * @return
+     */
+    public EventSeriesBuilder recurrenceDays(String r) {
+      this.recurrenceDays = r;
       return this;
+    }
+
+    /**
+     *
+     * @param c
+     * @return
+     */
+    public EventSeriesBuilder occurrenceCount(int c) {
+      this.occurrenceCount = c;
+      return this;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public EventSeries build() {
+      return new EventSeries(subject, startDate, startTime, endDate, endTime,
+              description, location, isPrivate, recurrenceDays, occurrenceCount);
     }
 
   }
