@@ -192,6 +192,14 @@ public class EventSeries {
     return this.endTime;
   }
 
+  public String getRecurrenceDays() {
+    return this.recurrenceDays;
+  }
+
+  public int getOccurrenceCount() {
+    return this.occurrenceCount;
+  }
+
   public String getDescription() {
     return description;
   }

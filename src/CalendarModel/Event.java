@@ -42,13 +42,18 @@ public class Event {
   }
 
   /**
+   * A Getter for the inner builder class.
    *
-   * @return
+   * @return a builder for this event
    */
   public EventBuilder getBuilder() {
     return new EventBuilder(this.subject, this.startDate, this.startTime);
   }
 
+  /**
+   * This class represents an inner builder class that builds some of the fields
+   * of this event.
+   */
    static class EventBuilder {
     private final String subject;
     private final LocalDate startDate;
@@ -60,10 +65,11 @@ public class Event {
     private boolean isPrivate;
 
      /**
+      * Constructs an EventBuilder object.
       *
-      * @param subject
-      * @param startDate
-      * @param startTime
+      * @param subject the subject of the event
+      * @param startDate the start date of the event
+      * @param startTime the start time of the event
       */
     public EventBuilder(String subject, LocalDate startDate, LocalTime startTime) {
       this.subject = subject;
@@ -77,9 +83,10 @@ public class Event {
     }
 
      /**
+      * Changes the end date to the given date
+      * @param e the given date
       *
-      * @param e
-      * @return
+      * @return this builder
       */
      public EventBuilder endDate(LocalDate e) {
        this.endDate = e;
@@ -87,9 +94,9 @@ public class Event {
      }
 
      /**
-      *
-      * @param e
-      * @return
+      * Changes the end time to the given time
+      * @param e the given time
+      * @return this builder
       */
     public EventBuilder endTime(LocalTime e) {
       this.endTime = e;

@@ -35,11 +35,23 @@ public class CalendarModel implements IModel {
   @Override
   public Event createEvent(String input) {
     String[] arg = input.split(" ");
-    String[] start = arg[4].split("T");
-    LocalDate startDate = LocalDate.parse(start[0]);
-    LocalTime startTime = LocalTime.parse(start[1]);
+    LocalDate startDate = null;
+    LocalTime startTime = null;
+
+    if (input.contains("on")) {
+      startDate = LocalDate.parse(arg[4]);
+      startTime = LocalTime.of(8, 0);
+    }
+
+    if (input.contains("from")) {
+      String[] start = arg[4].split("T");
+       startDate = LocalDate.parse(start[0]);
+       startTime = LocalTime.parse(start[1]);
+    }
+
 
     EventBuilder e = new EventBuilder(arg[2], startDate, startTime);
+
 
     if (input.contains("to")) {
       String[] end = arg[6].split("T");
@@ -66,6 +78,7 @@ public class CalendarModel implements IModel {
     LocalDate startDate = LocalDate.parse(start[0]);
     LocalTime startTime = LocalTime.parse(start[1]);
     String recurringDays = arg[6];
+    int occurrenceCount = 0;
 
     EventSeriesBuilder e = new EventSeriesBuilder(arg[2], startDate, startTime)
             .recurrenceDays(recurringDays);
@@ -76,6 +89,11 @@ public class CalendarModel implements IModel {
       LocalTime endTime = LocalTime.parse(end[1]);
       recurringDays = arg[8];
       e.endDate(endDate).endTime(endTime).recurrenceDays(recurringDays);
+    }
+
+    if (input.contains("for")) {
+      occurrenceCount = Integer.parseInt(arg[10]);
+      e.occurrenceCount(occurrenceCount);
     }
 
 
