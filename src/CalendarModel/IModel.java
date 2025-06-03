@@ -15,12 +15,9 @@ public interface IModel {
 
   void setString(String i);
 
-  Event createEvent(String subject, LocalDate startDate, LocalTime startTime, LocalDate endDate,
-                    LocalTime endTime, String description, String location, boolean isPrivate);
+  Event createEvent(String input);
 
-  EventSeries createEventSeries(String subject, LocalDate startDate, LocalTime startTime, LocalDate endDate,
-                                LocalTime endTime, String description, String location, boolean isPrivate,
-                                ArrayList<DayOfWeek> repeatDays, int times);
+  EventSeries createEventSeries(String input);
 
 
 

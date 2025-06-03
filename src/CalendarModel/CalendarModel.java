@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import CalendarModel.Event.EventBuilder;
 
 public class CalendarModel implements IModel {
 
@@ -31,28 +32,36 @@ public class CalendarModel implements IModel {
 
 
   @Override
-  public Event createEvent(String subject, LocalDate startDate, LocalTime startTime, LocalDate endDate,
-                           LocalTime endTime, String description, String location, boolean isPrivate) {
+  public Event createEvent(String input) {
+    String[] arg = input.split(" ");
+    String[] start = arg[4].split("T");
+    LocalDate startDate = LocalDate.parse(start[0]);
+    LocalTime startTime = LocalTime.parse(start[1]);
 
-    Event e = new Event(subject, startDate, startTime, endDate, endTime,
-            description, location, isPrivate);
+    EventBuilder e = new EventBuilder(arg[2], startDate, startTime);
+
+    if (arg.length == 7) {
+      String[] end = arg[6].split("T");
+      LocalDate endDate = LocalDate.parse(end[0]);
+      LocalTime endTime = LocalTime.parse(end[1]);
+      e.endDate(endDate).endTime(endTime);
+    }
+
 
     if (eventsByDate.containsKey(startDate)) {
-      eventsByDate.get(startDate).add(e);
+      eventsByDate.get(startDate).add(e.build());
     } else {
       List<Event> newStartDate = new ArrayList<>();
-      newStartDate.add(e);
+      newStartDate.add(e.build());
       eventsByDate.put(startDate, newStartDate);
     }
-    return e;
+    return e.build();
   }
 
 
   @Override
-  public EventSeries createEventSeries(String subject, LocalDate startDate, LocalTime startTime, LocalDate endDate,
-                                       LocalTime endTime, String description, String location, boolean isPrivate,
-                                       ArrayList<DayOfWeek> repeatDays, int times) {
-    return new EventSeries(subject, startDate, startTime, endDate, endTime, description, location,
-            isPrivate, repeatDays, times);
+  public EventSeries createEventSeries(String input) {
+
+
   }
 }

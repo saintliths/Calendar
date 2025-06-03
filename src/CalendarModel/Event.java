@@ -45,25 +45,38 @@ public class Event {
    *
    * @return
    */
-  public static EventBuilder getBuilder() {
-    return new EventBuilder();
+  public EventBuilder getBuilder() {
+    return new EventBuilder(this.subject, this.startDate, this.startTime);
   }
 
-  static class EventBuilder {
-    private LocalTime endDate;
+   static class EventBuilder {
+    private final String subject;
+    private final LocalDate startDate;
+    private final LocalTime startTime;
+    private LocalDate endDate;
+    private LocalTime endTime;
     private String description;
     private String location;
     private boolean isPrivate;
 
-    public EventBuilder() {
-      this.endDate = LocalTime.MIDNIGHT;
+    public EventBuilder(String subject, LocalDate startDate, LocalTime startTime) {
+      this.subject = subject;
+      this.startDate = startDate;
+      this.startTime = startTime;
+      this.endDate = LocalDate.now();
+      this.endTime = LocalTime.MIDNIGHT;
       this.description = "";
       this.location = "";
       this.isPrivate = false;
     }
 
-    public EventBuilder endDate(LocalTime e) {
-      this.endDate = e;
+     public EventBuilder endDate(LocalDate e) {
+       this.endDate = e;
+       return this;
+     }
+
+    public EventBuilder endTime(LocalTime e) {
+      this.endTime = e;
       return this;
     }
 
@@ -80,6 +93,11 @@ public class Event {
     public EventBuilder isPrivate(boolean p) {
       this.isPrivate = p;
       return this;
+    }
+
+    public Event build() {
+      return new Event(subject, startDate, startTime, endDate, endTime,
+              description, location, isPrivate);
     }
 
   }
