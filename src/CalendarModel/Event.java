@@ -19,7 +19,7 @@ public class Event {
   private final boolean isPrivate;
 
   /**
-   * Private constructor for an Event.
+   * Public constructor for an Event.
    * @param subject the subject of the event
    * @param startDate the start date of the event
    * @param startTime the time the event starts
@@ -41,6 +41,10 @@ public class Event {
     this.isPrivate = isPrivate;
   }
 
+  /**
+   *
+   * @return
+   */
   public static EventBuilder getBuilder() {
     return new EventBuilder();
   }

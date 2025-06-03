@@ -6,19 +6,13 @@ import java.io.PrintStream;
  * This class represents the implementation for the view of the calendar.
  */
 public class CalendarView implements IView {
-  private PrintStream out;
+  private final PrintStream out;
 
   public CalendarView(PrintStream out) {
 
     this.out = out;
   }
 
-
-  @Override
-  public void showString(String s) {
-    out.println("Command: "+s);
-
-  }
 
   @Override
   public void showOptions() {

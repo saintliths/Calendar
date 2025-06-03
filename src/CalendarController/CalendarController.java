@@ -13,9 +13,9 @@ import CalendarView.IView;
  * This class represents the controller implementation for a calendar.
  */
 public class CalendarController implements IController {
-  private Scanner in;
-  private IView view;
-  private IModel model;
+  private final Scanner in;
+  private final IView view;
+  private final IModel model;
 
   public CalendarController(IModel model, InputStream in, IView view) {
     this.model = model;
@@ -29,8 +29,6 @@ public class CalendarController implements IController {
     boolean quit = false;
 
     while (!quit) {
-      //tell view to show the string so far.
-      view.showString(this.model.getInput());
       //tell view to show options
       view.showOptions();
       //accept user input
@@ -56,23 +54,22 @@ public class CalendarController implements IController {
     view.enterSubject();
     String subject =  in.nextLine();
     if (subject.isEmpty()) {
-      view.showOptionError();
-      view.enterSubject();
+      throw new IllegalArgumentException("Subject is required");
     }
 
     view.enterStartDate();
-    String startd = in.nextLine();
-    if (startd.isEmpty()) {
-      view.showOptionError();
+    String startDateString = in.nextLine();
+    if (startDateString.isEmpty()) {
+      throw new IllegalArgumentException("Start date is required");
     }
-    LocalDate startDate = LocalDate.parse(in.nextLine());
+    LocalDate startDate = LocalDate.parse(startDateString);
 
     view.enterStartTime();
-    String startt = in.nextLine();
-    while (startt.isEmpty()) {
-      view.showOptionError();
+    String startTimeString = in.nextLine();
+    if (startTimeString.isEmpty()) {
+      throw new IllegalArgumentException("Start time is required");
     }
-    LocalTime startTime = LocalTime.parse(in.nextLine());
+    LocalTime startTime = LocalTime.parse(startTimeString);
 
     view.enterEndDate();
       String endd = in.nextLine();
