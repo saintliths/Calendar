@@ -32,6 +32,9 @@ public class CalendarModel implements IModel {
   }
 
 
+  // create event <eventSubject> from <dateStringTtimeString> to <dateStringTtimeString>
+  // 2025-07-06T03:22
+  // create event <eventSubject> on <dateString>
   @Override
   public Event createEvent(String input) {
     String[] arg = input.split(" ");
@@ -67,7 +70,13 @@ public class CalendarModel implements IModel {
       newStartDate.add(e.build());
       eventsByDate.put(startDate, newStartDate);
     }
-    return e.build();
+
+
+    Event newEvent = e.build();
+    eventsByDate.get(startDate).add(newEvent);
+
+
+    return newEvent;
   }
 
 
@@ -78,7 +87,7 @@ public class CalendarModel implements IModel {
     LocalDate startDate = LocalDate.parse(start[0]);
     LocalTime startTime = LocalTime.parse(start[1]);
     String recurringDays = arg[6];
-    int occurrenceCount = 0;
+    int occurrenceCount;
 
     EventSeriesBuilder e = new EventSeriesBuilder(arg[2], startDate, startTime)
             .recurrenceDays(recurringDays);
@@ -99,4 +108,55 @@ public class CalendarModel implements IModel {
 
     return e.build();
   }
+
+  public Event editEvent(String input) {
+
+    // edit event <property> <eventSubject> from
+    // <dateStringTtimeString> to <dateStringTtimeString> with <NewPropertyValue>
+
+    // parse the event input
+    String[] arg = input.split(" ");
+    String property = arg[2];
+
+    String eventSubject = arg[3];
+    String[] start = arg[5].split("T");
+
+    LocalDate startDate = LocalDate.parse(start[0]);
+    LocalTime startTime = LocalTime.parse(start[1]);
+
+    EventBuilder e = new EventBuilder(eventSubject, startDate, startTime);
+
+    switch (property) {
+      case "subject":
+        e.subject(arg[9]);
+        break;
+        case "start":
+
+    }
+
+    if (input.contains("to")) {
+      String[] end = arg[7].split("T");
+      LocalDate endDate = LocalDate.parse(end[0]);
+      LocalTime endTime = LocalTime.parse(end[1]);
+    }
+
+    return e.build();
+
+
+
+    // find the event
+
+    // use the eventBuilder
+//    EventBuilder builder = new EventBuilder(
+//            e.getSubject(),
+//            e.getStartDate(),
+//            e.getStartTime()
+//    );
+  }
+  // do String input so u get the entire input string
+  // and similar to what i did above split the input string into diff parts
+  // sorry but why do we have to split the string
+  // cuz the user inputs an entire string, ex. "create event Hehe from " +
+  //            "2025-03-23T12:00 to 2025-04-04T03:00" do then u gotta get parts of the string
+
 }

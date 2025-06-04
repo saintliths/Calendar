@@ -46,8 +46,27 @@ public class CalendarController implements IController {
           model.createEvent(in);
         }
       }
+      else if (in.startsWith("edit event")) {
+        // model.editEvent
 
+      }
+      else if (in.startsWith("edit events")) {
+        // mode.editEvents
 
+      }
+      else if (in.startsWith("edit series")) {
+        //
+
+      }
+      else if (in.startsWith("print events")) {
+
+      }
+      else if (in.startsWith("show status")) {
+
+      }
+      else {
+        view.showOptionError();
+      }
 
     }
   }

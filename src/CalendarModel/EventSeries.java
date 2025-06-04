@@ -11,16 +11,17 @@ import java.util.UUID;
  * Represents a series of events.
  */
 public class EventSeries {
-  private String subject;
-  private LocalDate startDate;
-  private LocalTime startTime;
-  private LocalDate endDate;
-  private LocalTime endTime;
-  private String description;
-  private String location;
-  private boolean isPrivate;
-  private String recurrenceDays;  // e.g., [MONDAY, WEDNESDAY]
-  private int occurrenceCount;
+  private final String subject;
+  private final LocalDate startDate;
+  private final LocalTime startTime;
+  private final LocalDate endDate;
+  private final LocalTime endTime;
+  private final String description;
+  private final String location;
+  private final boolean isPrivate;
+  private final String recurrenceDays;  // e.g., [MONDAY, WEDNESDAY]
+  private final int occurrenceCount;
+  private final LocalDate untilDate;
 
   /**
    * Private constructor for an EventSeries.
@@ -32,11 +33,13 @@ public class EventSeries {
    * @param description description of the event
    * @param location location of the event
    * @param isPrivate whether is it private or public
-   * @param
+   * @param recurrenceDays what days the event repeats on
+   * @param occurrenceCount how many times the event repeat
+   * @param untilDate when does the event repeat until
    */
   public EventSeries(String subject, LocalDate startDate, LocalTime startTime, LocalDate endDate,
                LocalTime endTime, String description, String location, boolean isPrivate,
-                     String recurrenceDays, int occurrenceCount) {
+                     String recurrenceDays, int occurrenceCount,  LocalDate untilDate) {
     this.subject = subject;
     this.startDate = startDate;
     this.startTime = startTime;
@@ -47,18 +50,20 @@ public class EventSeries {
     this.isPrivate = isPrivate;
     this.recurrenceDays = recurrenceDays;
     this.occurrenceCount = occurrenceCount;
+    this.untilDate = untilDate;
   }
 
   /**
+   * Getter for EventSeriesBuilder.
    *
-   * @return
+   * @return the Builder object for this class
    */
   public EventSeriesBuilder getBuilder() {
     return new EventSeriesBuilder(this.subject, this.startDate, this.startTime);
   }
 
   /**
-   *
+   * Inner class representing a builder for the EventSeries class.
    */
   static class EventSeriesBuilder {
     private String subject;
@@ -71,6 +76,7 @@ public class EventSeries {
     private boolean isPrivate;
     private String recurrenceDays;  // e.g., [MONDAY, WEDNESDAY]
     private int occurrenceCount;
+    private LocalDate untilDate;
 
     /**
      *
@@ -85,6 +91,7 @@ public class EventSeries {
       this.endDate = startDate;
       this.recurrenceDays = "";
       this.occurrenceCount = 0;
+      this.untilDate = endDate;
       this.endTime = LocalTime.MIDNIGHT;
       this.description = "";
       this.location = "";
@@ -163,11 +170,21 @@ public class EventSeries {
 
     /**
      *
+     * @param u
+     * @return
+     */
+    public EventSeriesBuilder untilDate(LocalDate u) {
+      this.untilDate = u;
+      return this;
+    }
+
+    /**
+     *
      * @return
      */
     public EventSeries build() {
       return new EventSeries(subject, startDate, startTime, endDate, endTime,
-              description, location, isPrivate, recurrenceDays, occurrenceCount);
+              description, location, isPrivate, recurrenceDays, occurrenceCount, untilDate);
     }
 
   }
@@ -198,6 +215,10 @@ public class EventSeries {
 
   public int getOccurrenceCount() {
     return this.occurrenceCount;
+  }
+
+  public LocalDate getUntilDate() {
+    return this.untilDate;
   }
 
   public String getDescription() {

@@ -50,6 +50,7 @@ public class CalendarModelTest {
     assertEquals("09:33", e.getEndTime().toString());
     assertEquals("MWF", e.getRecurrenceDays());
     assertEquals(5, e.getOccurrenceCount());
+    assertEquals("2025-09-30", e.getUntilDate().toString());
 
   }
 

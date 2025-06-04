@@ -1,7 +1,6 @@
 package CalendarModel;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 /**
@@ -55,9 +54,9 @@ public class Event {
    * of this event.
    */
    static class EventBuilder {
-    private final String subject;
-    private final LocalDate startDate;
-    private final LocalTime startTime;
+    private String subject;
+    private LocalDate startDate;
+    private LocalTime startTime;
     private LocalDate endDate;
     private LocalTime endTime;
     private String description;
@@ -93,6 +92,11 @@ public class Event {
        return this;
      }
 
+    public EventBuilder subject(String s) {
+      this.subject = s;
+      return this;
+    }
+
      /**
       * Changes the end time to the given time
       * @param e the given time
@@ -104,9 +108,9 @@ public class Event {
     }
 
      /**
-      *
-      * @param d
-      * @return
+      * Changes the description to the given string
+      * @param d the given string/new description
+      * @return this builder
       */
     public EventBuilder description(String d) {
       this.description = d;
@@ -114,7 +118,7 @@ public class Event {
     }
 
      /**
-      *
+      * Changes the location to the given string
       * @param l
       * @return
       */
@@ -124,7 +128,7 @@ public class Event {
     }
 
      /**
-      *
+      * Changes the isPrivate to the given boolean
       * @param p
       * @return
       */
