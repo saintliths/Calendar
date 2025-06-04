@@ -54,4 +54,21 @@ public class CalendarModelTest {
 
   }
 
+  @Test
+  public void testEditEvent_ChangeSubject() {
+    Event oldEvent =
+            model.createEvent("create event Hehe from 2025-03-23T12:00 to 2025-04-04T03:00");
+
+    Event newEvent = model.editEvent("edit event subject Hehe from 2025-03-23T12:00" +
+            " to 2025-04-04T03:00 with 2025-04-23T12:00");
+
+    assertEquals("Hehe", newEvent.getSubject());
+    assertEquals("2025-04-23", newEvent.getStartDate().toString());
+    assertEquals("12:00", newEvent.getStartTime().toString());
+    assertEquals("2025-04-04", newEvent.getEndDate().toString());
+    assertEquals("03:00", newEvent.getEndTime().toString());
+    assertEquals("", newEvent.getDescription());
+
+  }
+
 }

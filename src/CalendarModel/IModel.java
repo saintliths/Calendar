@@ -19,6 +19,6 @@ public interface IModel {
 
   EventSeries createEventSeries(String input);
 
-
+  Event editEvent(String input);
 
 }

@@ -117,28 +117,52 @@ public class CalendarModel implements IModel {
     // parse the event input
     String[] arg = input.split(" ");
     String property = arg[2];
-
     String eventSubject = arg[3];
     String[] start = arg[5].split("T");
-
     LocalDate startDate = LocalDate.parse(start[0]);
     LocalTime startTime = LocalTime.parse(start[1]);
 
-    EventBuilder e = new EventBuilder(eventSubject, startDate, startTime);
-
-    switch (property) {
-      case "subject":
-        e.subject(arg[9]);
-        break;
-        case "start":
-
-    }
+    LocalDate endDate = null;
+    LocalTime endTime = null;
 
     if (input.contains("to")) {
       String[] end = arg[7].split("T");
-      LocalDate endDate = LocalDate.parse(end[0]);
-      LocalTime endTime = LocalTime.parse(end[1]);
+      endDate = LocalDate.parse(end[0]);
+      endTime = LocalTime.parse(end[1]);
     }
+
+    EventBuilder e = new EventBuilder(eventSubject, startDate, startTime);
+
+    // check if it has a definitive end date bc it affects the parsing
+    if (endDate != null && endTime != null) {
+      e.endDate(endDate).endTime(endTime);
+    }
+
+    String newValue = arg[arg.length - 1];
+
+    // handles the one with all the fields
+    switch (property) {
+      case "subject":
+        e.subject(newValue);
+        break;
+      case "start":
+        e.startDate(LocalDate.parse(newValue));
+        break;
+        case "end":
+          e.endDate(LocalDate.parse(newValue));
+          break;
+      case "description":
+        e.description(newValue);
+        break;
+      case "location":
+        e.location(newValue);
+        break;
+        case "status":
+          e.isPrivate(Boolean.parseBoolean(newValue));  // change the true to "false"
+          break;
+    }
+
+    // handle when its default
 
     return e.build();
 

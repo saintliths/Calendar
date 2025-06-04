@@ -87,6 +87,12 @@ public class Event {
       *
       * @return this builder
       */
+
+     public EventBuilder startDate(LocalDate e) {
+       this.startDate = e;
+       return this;
+     }
+
      public EventBuilder endDate(LocalDate e) {
        this.endDate = e;
        return this;
