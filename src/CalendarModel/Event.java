@@ -81,17 +81,22 @@ public class Event {
       this.isPrivate = false;
     }
 
+    public EventBuilder startDate(LocalDate s) {
+      this.startDate = s;
+      return this;
+    }
+
+    public EventBuilder startTime(LocalTime s) {
+      this.startTime = s;
+      return this;
+    }
+
      /**
       * Changes the end date to the given date
       * @param e the given date
       *
       * @return this builder
       */
-
-     public EventBuilder startDate(LocalDate e) {
-       this.startDate = e;
-       return this;
-     }
 
      public EventBuilder endDate(LocalDate e) {
        this.endDate = e;

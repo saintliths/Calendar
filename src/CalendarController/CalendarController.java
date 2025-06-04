@@ -59,9 +59,11 @@ public class CalendarController implements IController {
 
       }
       else if (in.startsWith("print events")) {
+        view.printEvents(model.printEvents(in));
 
       }
       else if (in.startsWith("show status")) {
+        view.showStatus(model.showStatus(in));
 
       }
       else {

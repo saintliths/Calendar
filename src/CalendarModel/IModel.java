@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents the interface for the Model.
@@ -20,5 +21,9 @@ public interface IModel {
   EventSeries createEventSeries(String input);
 
   Event editEvent(String input);
+
+  List<String> printEvents(String input);
+
+  String showStatus(String input);
 
 }
