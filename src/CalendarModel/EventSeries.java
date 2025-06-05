@@ -118,22 +118,32 @@ public class EventSeries {
     }
 
     /**
-     * @param e
-     * @return
+     * Changes the endTime to the given end time.
+     *
+     * @param e the given end time
+     * @return this builder
      */
     public EventSeriesBuilder endTime(LocalTime e) {
       this.endTime = e;
       return this;
     }
 
+    /**
+     * Changes the subject to the given subject.
+     *
+     * @param s the given subject
+     * @return this builder
+     */
     public EventSeriesBuilder subject(String s) {
       this.subject = s;
       return this;
     }
 
     /**
-     * @param d
-     * @return
+     * Changes the description to the given description.
+     *
+     * @param d the given description
+     * @return this builder
      */
     public EventSeriesBuilder description(String d) {
       this.description = d;
@@ -141,8 +151,10 @@ public class EventSeries {
     }
 
     /**
-     * @param l
-     * @return
+     * Changes the location to the given location.
+     *
+     * @param l the given location
+     * @return this builder
      */
     public EventSeriesBuilder location(String l) {
       this.location = l;
@@ -150,8 +162,10 @@ public class EventSeries {
     }
 
     /**
-     * @param p
-     * @return
+     * Changes the isPrivate field to the given boolean.
+     *
+     * @param p the given boolean
+     * @return this builder
      */
     public EventSeriesBuilder isPrivate(boolean p) {
       this.isPrivate = p;
@@ -159,8 +173,10 @@ public class EventSeries {
     }
 
     /**
-     * @param r
-     * @return
+     * Changes the recurrenceDays to the given recurrence days.
+     *
+     * @param r the given recurrence days
+     * @return this builder
      */
     public EventSeriesBuilder recurrenceDays(String r) {
       this.recurrenceDays = r;
@@ -168,8 +184,10 @@ public class EventSeries {
     }
 
     /**
-     * @param c
-     * @return
+     * Changes the occurrenceCount to the given occurrence count
+     *
+     * @param c the given occurrence count
+     * @return this builder
      */
     public EventSeriesBuilder occurrenceCount(int c) {
       this.occurrenceCount = c;
@@ -177,8 +195,10 @@ public class EventSeries {
     }
 
     /**
-     * @param u
-     * @return
+     * Changes the untilDate to the given until date
+     *
+     * @param u the given until date
+     * @return this builder
      */
     public EventSeriesBuilder untilDate(LocalDate u) {
       this.untilDate = u;
@@ -186,7 +206,8 @@ public class EventSeries {
     }
 
     /**
-     * @return
+     * Builds an EventSeries from these fields.
+     * @return an EventSeries object.
      */
     public EventSeries build() {
       return new EventSeries(subject, startDate, startTime, endDate, endTime,
@@ -195,26 +216,50 @@ public class EventSeries {
 
   }
 
+  /**
+   * Get the subject.
+   * @return a String representing this subject
+   */
   public String getSubject() {
     return this.subject;
   }
 
+  /**
+   * Get the start date.
+   * @return a LocalDate representing this start date
+   */
   public LocalDate getStartDate() {
     return this.startDate;
   }
 
+  /**
+   * Get the start time.
+   * @return a LocalTime representing this start time.
+   */
   public LocalTime getStartTime() {
     return this.startTime;
   }
 
+  /**
+   * Get the end date.
+   * @return a LocalDate representing this end date.
+   */
   public LocalDate getEndDate() {
     return this.endDate;
   }
 
+  /**
+   * Get the end time.
+   * @return a LocalTime representing this end time.
+   */
   public LocalTime getEndTime() {
     return this.endTime;
   }
 
+  /**
+   * Get the recurrence days.
+   * @return a String representing this recurrence days.
+   */
   public String getRecurrenceDays() {
     return this.recurrenceDays;
   }

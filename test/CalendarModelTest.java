@@ -220,10 +220,10 @@ public class CalendarModelTest {
 
   @Test
   public void testStatus_isBusy() {
-    Event event1 = model.createEvent("create event on 2025-03-23");
+    Event event1 = model.createEvent("create event on 2026-01-01");
     System.out.println(model.getHashMap().get(LocalDateTime.of(event1.getStartDate(),
             event1.getStartTime())));
-    String actual = model.showStatus("show status on 2025-03-23T03:33");
+    String actual = model.showStatus("show status on 2026-01-01T03:33");
     assertEquals("Busy", actual);
   }
 
@@ -232,7 +232,7 @@ public class CalendarModelTest {
     Event event1 = model.createEvent("create event on 2025-03-23");
     System.out.println(model.getHashMap().get(LocalDateTime.of(event1.getStartDate(),
             event1.getStartTime())));
-    String actual = model.showStatus("show status on 2025-03-23T07:00");
+    String actual = model.showStatus("show status on 2025-03-23T18:00");
     assertEquals("Not Busy", actual);
   }
 

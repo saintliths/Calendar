@@ -233,10 +233,6 @@ public class Event {
     return isPrivate;
   }
 
-  public boolean checkEventOverlap(Object o) {
-    return false;
-  }
-
   /**
    * Overrides Java's toString method.
    * @return this event as a String with subject, startTime, endTime, and location

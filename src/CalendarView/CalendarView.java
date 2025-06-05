@@ -9,8 +9,11 @@ import java.util.List;
 public class CalendarView implements IView {
   private final PrintStream out;
 
+  /**
+   * Constructs a CalendarView object.
+   * @param out the output stream
+   */
   public CalendarView(PrintStream out) {
-
     this.out = out;
   }
 

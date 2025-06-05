@@ -20,6 +20,12 @@ public class CalendarModel implements IModel {
   // a way to represent months and days LocalDate
   private String input;
 
+  /**
+   * Constructs a CalendarModel object.
+   *
+   * @param eventsByDate the hashmap that maps each event to a specific date
+   * @param eventSeriesByDate the hashmap that maps each event series to a specific date
+   */
   public CalendarModel(Map<LocalDateTime, List<Event>> eventsByDate,
                        Map<LocalDateTime, List<EventSeries>> eventSeriesByDate) {
     this.eventsByDate = eventsByDate;
@@ -73,9 +79,9 @@ public class CalendarModel implements IModel {
     LocalTime endTime = null;
 
     if (input.contains("on")) {
-      startDate = LocalDate.parse(arg[4]);
+      startDate = LocalDate.parse(arg[3]);
       startTime = LocalTime.of(8, 0);
-      endDate = LocalDate.parse(arg[4]);
+      endDate = LocalDate.parse(arg[3]);
       endTime = LocalTime.of(17, 0);
     }
 
@@ -529,14 +535,36 @@ public class CalendarModel implements IModel {
     String[] date = arg[3].split("T");
     LocalDate eventDate = LocalDate.parse(date[0]);
     LocalTime eventTime = LocalTime.parse(date[1]);
+    LocalDateTime eventDateTime = LocalDateTime.of(eventDate, eventTime);
 
-    if (eventsByDate.containsKey(LocalDateTime.of(eventDate, eventTime))) {
-      List<Event> events = eventsByDate.get(LocalDateTime.of(eventDate, eventTime));
-      if (!events.isEmpty()) {
-        return "Busy";
+    if (eventsByDate.containsKey(eventDateTime) &&
+            !eventsByDate.get(eventDateTime).isEmpty()) {
+      for (Map.Entry<LocalDateTime, List<Event>> entry : eventsByDate.entrySet()) {
+        for (Event event : entry.getValue()) {
+          LocalTime start = event.getStartTime();
+          LocalTime end = event.getEndTime();
+
+          if ((eventTime.equals(start) || eventTime.isAfter(start))
+                  && eventTime.isBefore(end)) {
+            return "Busy";
+          }
+        }
+      }
+    } else if (eventSeriesByDate.containsKey(eventDateTime) &&
+            !eventSeriesByDate.get(eventDateTime).isEmpty()) {
+      for (Map.Entry<LocalDateTime, List<EventSeries>> entry : eventSeriesByDate.entrySet()) {
+        for (EventSeries eventSeries : entry.getValue()) {
+          LocalTime start = eventSeries.getStartTime();
+          LocalTime end = eventSeries.getEndTime();
+
+          if ((eventTime.equals(start) || eventTime.isAfter(start))
+                  && eventTime.isBefore(end)) {
+            return "Busy";
+          }
+        }
       }
     }
-    return "Not busy";
+      return "Not Busy";
   }
 
   }

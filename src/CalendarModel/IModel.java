@@ -41,7 +41,7 @@ public interface IModel {
   Event editEvent(String input);
 
   /**
-   * Edit a series of events.
+   * Edit an event and if it's part of a series, edit this event and the ones after it.
    *
    * @param input the user input
    * @return an EventSeries after it has been edited
@@ -57,6 +57,13 @@ public interface IModel {
    */
   EventSeries editSeries(String input);
 
+
+  /**
+   * Print out all the events on a given date or within a given interval.
+   *
+   * @param input the user input
+   * @return a List of strings containing all the events to be printed
+   */
   List<String> printEvents(String input);
 
   /**
