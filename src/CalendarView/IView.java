@@ -1,53 +1,15 @@
 package CalendarView;
 
+import java.util.List;
+
 /**
  * This represents an interface for the view.
  */
 public interface IView {
-  /**
-   *
-   */
-  void showOptions();
 
-  /**
-   *
-   */
-  void enterSubject();
+  void showStatus(String status);
 
-  /**
-   *
-   */
-  void enterStartDate();
-
-  /**
-   *
-   */
-  void enterStartTime();
-
-  /**
-   *
-   */
-  void enterEndDate();
-
-  /**
-   *
-   */
-  void enterEndTime();
-
-  /**
-   *
-   */
-  void enterDescription();
-
-  /**
-   *
-   */
-  void enterLocation();
-
-  /**
-   *
-   */
-  void enterEventStatus();
+  void printEvents(List<String> events);
 
   /**
    *

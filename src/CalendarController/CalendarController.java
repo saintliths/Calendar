@@ -1,12 +1,8 @@
 package CalendarController;
 
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.Scanner;
 
-import CalendarModel.Event;
 import CalendarModel.IModel;
 import CalendarView.IView;
 
@@ -18,6 +14,13 @@ public class CalendarController implements IController {
   private final IView view;
   private final IModel model;
 
+  /**
+   * Constructs a CalendarController object.
+   *
+   * @param model the model that is passed into this controller
+   * @param in    the user input
+   * @param view  the view that is passed into this controller
+   */
   public CalendarController(IModel model, InputStream in, IView view) {
     this.model = model;
     this.view = view;
@@ -45,9 +48,24 @@ public class CalendarController implements IController {
         } else {
           model.createEvent(in);
         }
+      } else if (in.startsWith("edit event")) {
+        model.editEvent(in);
+
+      } else if (in.startsWith("edit events")) {
+        model.editEventSeries(in);
+
+      } else if (in.startsWith("edit series")) {
+        model.editSeries(in);
+
+      } else if (in.startsWith("print events")) {
+        view.printEvents(model.printEvents(in));
+
+      } else if (in.startsWith("show status")) {
+        view.showStatus(model.showStatus(in));
+
+      } else {
+        view.showOptionError();
       }
-
-
 
     }
   }
