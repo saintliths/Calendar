@@ -70,7 +70,7 @@ public class CalendarModelTest {
             model.createEvent("create event Hehe from 2025-03-23T12:00 to 2025-04-04T03:00");
   }
 
-  // subject with multiple words
+  // throw exception if a property has more than its expected
   @Test
   public void testCreateEvents_MultipleSubjectWords() {
     Event e =
@@ -246,6 +246,8 @@ public class CalendarModelTest {
   public void testToString() {
 
   }
+
+  // test inclusivity for creating event series until a specific date
 
   // test checkEventOverlap
 

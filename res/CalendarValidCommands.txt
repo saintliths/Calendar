@@ -1,0 +1,17 @@
+Creating Events
+
+create event <eventSubject> from <dateStringTtimeString> to <dateStringTtimeString>
+
+create event <eventSubject> from <dateStringTtimeString> to <dateStringTtimeString> repeats <weekdays> for <N> times
+
+// creates an event series until a specific date (inclusive)
+create event <eventSubject> from <dateStringTtimeString> to <dateStringTtimeString> repeats <weekdays> until <dateString>
+
+// creates single all day events
+create event <eventSubject> on <dateString>
+
+// create a series of all day events that repeat N times on specific weekdays
+create event <eventSubject> on <dateString> repeats <weekdays> for <N> times
+
+// to create a series of all day events until a specified date
+create event <eventSubject> on <dateString> repeats <weekdays> until <dateString>

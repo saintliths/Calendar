@@ -150,7 +150,7 @@ public class CalendarModel implements IModel {
     String oldLocation = es.getLocation();
     String oldRecurrence = es.getRecurrenceDays();
     Boolean oldStatus = es.isPrivate();
-    int oldOccurence = es.getOccurrenceCount();
+    int oldOccurrence = es.getOccurrenceCount();
 
     // new value is always the last thing in the input
     String newValue = arg[arg.length - 1];
@@ -169,7 +169,7 @@ public class CalendarModel implements IModel {
         e.location(oldLocation);
         e.isPrivate(oldStatus);
         e.recurrenceDays(oldRecurrence);
-        e.occurrenceCount(oldOccurence);
+        e.occurrenceCount(oldOccurrence);
         break;
       case "start":
         String[] newStartProperty = newValue.split("T");
@@ -184,7 +184,7 @@ public class CalendarModel implements IModel {
         e.location(oldLocation);
         e.isPrivate(oldStatus);
         e.recurrenceDays(oldRecurrence);
-        e.occurrenceCount(oldOccurence);
+        e.occurrenceCount(oldOccurrence);
         break;
       case "end":
         String[] newEndProperty = newValue.split("T");
@@ -199,7 +199,7 @@ public class CalendarModel implements IModel {
         e.location(oldLocation);
         e.isPrivate(oldStatus);
         e.recurrenceDays(oldRecurrence);
-        e.occurrenceCount(oldOccurence);
+        e.occurrenceCount(oldOccurrence);
         break;
       case "description":
         e.subject(oldSubject);
@@ -211,7 +211,7 @@ public class CalendarModel implements IModel {
         e.location(oldLocation);
         e.isPrivate(oldStatus);
         e.recurrenceDays(oldRecurrence);
-        e.occurrenceCount(oldOccurence);
+        e.occurrenceCount(oldOccurrence);
         break;
       case "location":
         e.location(newValue);
@@ -223,7 +223,7 @@ public class CalendarModel implements IModel {
         e.description(oldDescription);
         e.isPrivate(oldStatus);
         e.recurrenceDays(oldRecurrence);
-        e.occurrenceCount(oldOccurence);
+        e.occurrenceCount(oldOccurrence);
         break;
       case "status":
         e.subject(oldSubject);
@@ -276,7 +276,7 @@ public class CalendarModel implements IModel {
         }
       } // what if it is an event just not an event series
     } else {
-      throw new IllegalArgumentException("No such event series.");
+      throw new IllegalArgumentException("No event series with start date and subject .");
     }
 
 
@@ -358,6 +358,8 @@ public class CalendarModel implements IModel {
           break;
         }
       }
+    } else {
+      throw new IllegalArgumentException("No such event start date and subject.");
     }
 
     // get and set the current event properties
