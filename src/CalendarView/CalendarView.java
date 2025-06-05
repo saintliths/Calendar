@@ -14,6 +14,12 @@ public class CalendarView implements IView {
     this.out = out;
   }
 
+  /**
+   * Displays all the events in the list.
+   *
+   * @param events events from the ArrayList value
+   */
+  @Override
   public void printEvents(List<String> events) {
     for (String event : events) {
       out.println(event);

@@ -219,24 +219,44 @@ public class EventSeries {
     return this.recurrenceDays;
   }
 
+  /**
+   * Gets the corresponding number of occurrences of an event series.
+   * @return Number of occurrences.
+   */
   public int getOccurrenceCount() {
     return this.occurrenceCount;
   }
 
+  /**
+   * Gets the corresponding endDate of event series.
+   * @return LocalDate of the end.
+   */
   public LocalDate getUntilDate() {
     return this.untilDate;
   }
 
+  /**
+   * Gets the corresponding description of event series.
+   * @return description of the event
+   */
   public String getDescription() {
     return description;
   }
 
 
+  /**
+   * Gets the corresponding location of event series.
+   * @return String of the location
+   */
   public String getLocation() {
     return location;
   }
 
 
+  /**
+   * Gets the corresponding status of event series.
+   * @return true for private status
+   */
   public boolean isPrivate() {
     return isPrivate;
   }

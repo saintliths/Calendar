@@ -11,7 +11,7 @@ import CalendarModel.Event.EventBuilder;
 import CalendarModel.EventSeries.EventSeriesBuilder;
 
 /**
- *
+ * Class creates the events/event series, edit events/series, and queries the events.
  */
 public class CalendarModel implements IModel {
 
@@ -35,19 +35,30 @@ public class CalendarModel implements IModel {
     return this.eventsByDate;
   }
 
-  // check if current event created matches any of the pre existing events in the array list
-  public boolean checkEventOverlap(Event ne) {
+  // check if current event created matches any of the pre-existing events in the array list
+  public Boolean checkEventOverlap(Event ne) {
     LocalDateTime startDateEvent = LocalDateTime.of(ne.getStartDate(), ne.getStartTime());
 
+    // checks every event in the existing map
     if (eventsByDate.containsKey(startDateEvent)) {
+      // for all events with the same start date
       for (Event event : eventsByDate.get(startDateEvent)) {
+        // check the subject is the same
         boolean checkSubject = event.getSubject().equals(ne.getSubject());
-        boolean checkStart = event.getStartDate().equals(ne.build().getStartDate()) && event.getStartTime().equals(ne.build().getStartTime());
-        boolean checkEnd = event.getEndDate().equals(ne.build().getEndDate()) && event.getEndTime().equals(ne.build().getEndTime());
+        // check fi the time is the same for the event since we already know the date
+        boolean checkStart = event.getStartDate().equals(ne.getStartDate()) && event.getStartTime().equals(ne.getStartTime());
+        // check if the end date and time  is the same
+        boolean checkEnd = event.getEndDate().equals(ne.getEndDate()) &&
+                event.getEndTime().equals(ne.getEndTime());
+
+        // when all conditions are true it returns true
+        if (checkSubject && checkStart && checkEnd) {
+          return true;
+        }
       }
     }
-    return null;
-
+    // when not all are true it returns false
+    return false;
   }
 
   // create event <eventSubject> from <dateStringTtimeString> to <dateStringTtimeString>
@@ -83,8 +94,14 @@ public class CalendarModel implements IModel {
     EventBuilder e = new EventBuilder(arg[2], startDate, startTime);
     e.endDate(endDate).endTime(endTime);
 
+    Event addedEvent = e.build();
 
+    // check before adding to has
+    if (checkEventOverlap(addedEvent)) {
+      throw new IllegalArgumentException("Event already exists.");
+    }
 
+    // adds to hash
     if (eventsByDate.containsKey(LocalDateTime.of(startDate, startTime))) {
       eventsByDate.get(LocalDateTime.of(startDate, startTime)).add(e.build());
     } else {
@@ -93,7 +110,7 @@ public class CalendarModel implements IModel {
       eventsByDate.get(LocalDateTime.of(startDate, startTime)).add(e.build());
     }
 
-    return e.build();
+    return addedEvent;
 
   }
 
@@ -250,6 +267,8 @@ public class CalendarModel implements IModel {
         e.recurrenceDays(oldRecurrence);
         e.isPrivate(Boolean.parseBoolean(newValue));
         break;
+      default:
+        throw new IllegalArgumentException("No such property");
     }
 
     return e.build();
@@ -520,4 +539,4 @@ public class CalendarModel implements IModel {
     return "Not busy";
   }
 
-}
+  }

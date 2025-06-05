@@ -12,7 +12,7 @@ public interface IView {
   void printEvents(List<String> events);
 
   /**
-   *
+   * If the input is not a valid command.
    */
   void showOptionError();
 }

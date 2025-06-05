@@ -12,8 +12,11 @@ import CalendarModel.Event;
 import CalendarModel.EventSeries;
 import CalendarModel.IModel;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
+/**
+ * Tests for the methods within the calendar model.
+ */
 public class CalendarModelTest {
   IModel model;
 
@@ -65,7 +68,9 @@ public class CalendarModelTest {
   @Test
   public void testCreateEvents_MultipleSubjectWords() {
     Event e =
-            model.createEvent("create event " + "Hehe Haha" + "from 2025-03-23T12:00 to 2025-04-04T03:00");
+            model.createEvent("create event "
+                    + "Hehe Haha"
+                    + "from 2025-03-23T12:00 to 2025-04-04T03:00");
 
     assertEquals("Hehe Haha", e.getSubject());
     assertEquals("2025-03-23", e.getStartDate().toString());
@@ -78,9 +83,9 @@ public class CalendarModelTest {
 
   @Test
   public void testCreateEventSeries() {
-    EventSeries e = model.createEventSeries("create event Yabba from " +
-            "2025-09-23T04:56 to 2025-09-23T09:33 " +
-            "repeats MWF for 5 times");
+    EventSeries e = model.createEventSeries("create event Yabba from "
+            + "2025-09-23T04:56 to 2025-09-23T09:33 "
+            + "repeats MWF for 5 times");
     assertEquals("Yabba", e.getSubject());
     assertEquals("2025-09-23", e.getStartDate().toString());
     assertEquals("04:56", e.getStartTime().toString());
@@ -99,8 +104,8 @@ public class CalendarModelTest {
     Event anotherEvent =
             model.createEvent("create event OOD on 2025-06-03");
 
-    Event newEvent = model.editEvent("edit event subject Hehe from 2025-03-23T12:00" +
-            " to 2025-04-04T03:00 with Haha");
+    Event newEvent = model.editEvent("edit event subject Hehe from 2025-03-23T12:00"
+            + " to 2025-04-04T03:00 with Haha");
 
     assertEquals("Haha", newEvent.getSubject());
     assertEquals("2025-03-23", newEvent.getStartDate().toString());
@@ -116,8 +121,8 @@ public class CalendarModelTest {
     Event oldEvent =
             model.createEvent("create event Hehe from 2025-03-23T12:00 to 2025-04-04T03:00");
 
-    Event newEvent2 = model.editEvent("edit event start Hehe from 2025-03-23T12:00" +
-            " to 2025-04-04T03:00 with 2025-02-02T02:00");
+    Event newEvent2 = model.editEvent("edit event start Hehe from 2025-03-23T12:00"
+            + " to 2025-04-04T03:00 with 2025-02-02T02:00");
 
     assertEquals("Hehe", newEvent2.getSubject());
     assertEquals("2025-02-02", newEvent2.getStartDate().toString());
@@ -173,14 +178,14 @@ public class CalendarModelTest {
     this.setUp();
     // event is part of a series
 
-    EventSeries e = model.createEventSeries("create event Yabba from " +
-            "2025-09-23T04:56 to 2025-09-23T09:33 " +
-            "repeats MWF for 5 times");
+    EventSeries e = model.createEventSeries("create event Yabba from "
+            + "2025-09-23T04:56 to 2025-09-23T09:33 "
+            + "repeats MWF for 5 times");
     System.out.print(e.getEndTime());
 
     // change all subjects of all the events part of the series on or after the start date
-    EventSeries newSeries = model.editEventSeries("edit events subject Yabba from " +
-            "2025-09-23T04:56 with Fundies");
+    EventSeries newSeries = model.editEventSeries("edit events subject Yabba from "
+            + "2025-09-23T04:56 with Fundies");
 
     assertEquals("Fundies", newSeries.getSubject());
     assertEquals("2025-09-23", newSeries.getStartDate().toString());
@@ -197,12 +202,12 @@ public class CalendarModelTest {
 
   @Test
   public void testPrintEvents() {
-    Event event1 = model.createEvent("create event Hi " +
-            "from 2025-04-03T09:00 to 2025-04-03T10:00");
-    Event event2 = model.createEvent("create event Hai " +
-            "from 2025-04-03T11:00 to 2025-04-03T12:00");
-    Event event3 = model.createEvent("create event Bye " +
-            "from 2025-04-03T14:00 to 2025-04-03T17:00");
+    Event event1 = model.createEvent("create event Hi "
+            + "from 2025-04-03T09:00 to 2025-04-03T10:00");
+    Event event2 = model.createEvent("create event Hai "
+            + "from 2025-04-03T11:00 to 2025-04-03T12:00");
+    Event event3 = model.createEvent("create event Bye "
+            + "from 2025-04-03T14:00 to 2025-04-03T17:00");
 
     List<String> expected = new ArrayList<>(Arrays.asList(event3.toString(),
             event1.toString(), event2.toString()));
@@ -232,8 +237,8 @@ public class CalendarModelTest {
   }
 
 
-  // test event toString
-  @Test
+  // test checkEventOverlap
+  @Test(expected = IllegalArgumentException.class)
   public void testToString() {
     Event e =
             model.createEvent("create event Hehe from 2025-03-23T12:00 to 2025-04-04T03:00");
@@ -241,9 +246,8 @@ public class CalendarModelTest {
             model.createEvent("create event Hehe from 2025-03-23T12:00 to 2025-04-04T03:00");
   }
 
-  // test checkEventOverlap
 
-
+  // test event toString
 
   // test inclusivity for creating event series until a specific date
 
@@ -282,9 +286,6 @@ public class CalendarModelTest {
   // test EventBuilder startTime(LocalTime s)
 
   // test EventBuilder startDate(LocalDate s)
-
-
-
 
 
 }
