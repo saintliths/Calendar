@@ -26,11 +26,14 @@ public class CalendarModel implements IModel {
     this.eventSeriesByDate = eventSeriesByDate;
   }
 
+  // validate inputs
+  // work on flexibility
+  // try to move parsing logic into the builder or controller?
+
   @Override
   public Map<LocalDateTime, List<Event>> getHashMap() {
     return this.eventsByDate;
   }
-
 
   // create event <eventSubject> from <dateStringTtimeString> to <dateStringTtimeString>
   // 2025-07-06T03:22
@@ -66,6 +69,8 @@ public class CalendarModel implements IModel {
     e.endDate(endDate).endTime(endTime);
 
     // check if two events are the same
+
+    // check if there are quotes
 
     if (eventsByDate.containsKey(LocalDateTime.of(startDate, startTime))) {
       eventsByDate.get(LocalDateTime.of(startDate, startTime)).add(e.build());
@@ -104,10 +109,11 @@ public class CalendarModel implements IModel {
       e.occurrenceCount(occurrenceCount);
     }
 
-
+    // if startDate (key) already exists then add to the existing list  in value
     if (eventSeriesByDate.containsKey(LocalDateTime.of(startDate, startTime))) {
       eventSeriesByDate.get(LocalDateTime.of(startDate, startTime)).add(e.build());
     } else {
+      // if startDate does not exist as a list it will create one and add to that list
       eventSeriesByDate.put(LocalDateTime.of(startDate, startTime),
               new ArrayList<>());
       eventSeriesByDate.get(LocalDateTime.of(startDate, startTime)).add(e.build());
@@ -133,6 +139,7 @@ public class CalendarModel implements IModel {
     LocalTime startTime = LocalTime.parse(start[1]);
     String eventSubject = arg[3];
 
+    // contains the unchanges event series list  first value
     EventSeries es = eventSeriesByDate.get(LocalDateTime.of(startDate, startTime)).get(0);
     String oldSubject = es.getSubject();
     LocalDate oldStartDate = es.getStartDate();
@@ -145,89 +152,91 @@ public class CalendarModel implements IModel {
     Boolean oldStatus = es.isPrivate();
     int oldOccurence = es.getOccurrenceCount();
 
+    // new value is always the last thing in the input
     String newValue = arg[arg.length - 1];
 
+    // new builder to avoid mutations
     EventSeriesBuilder e = new EventSeriesBuilder(eventSubject, startDate, startTime);
 
-      switch (property) {
-        case "subject":
-          e.subject(newValue);
-          e.startDate(oldStartDate);
-          e.startTime(oldStartTime);
-          e.endDate(oldEndDate);
-          e.endTime(oldEndTime);
-          e.description(oldDescription);
-          e.location(oldLocation);
-          e.isPrivate(oldStatus);
-          e.recurrenceDays(oldRecurrence);
-          e.occurrenceCount(oldOccurence);
-          break;
-        case "start":
-          String[] newStartProperty = newValue.split("T");
-          String newStartDate = newStartProperty[0];
-          String newStartTime = newStartProperty[1];
-          e.subject(oldSubject);
-          e.startDate(LocalDate.parse(newStartDate));
-          e.startTime(LocalTime.parse(newStartTime));
-          e.endDate(oldEndDate);
-          e.endTime(oldEndTime);
-          e.description(oldDescription);
-          e.location(oldLocation);
-          e.isPrivate(oldStatus);
-          e.recurrenceDays(oldRecurrence);
-          e.occurrenceCount(oldOccurence);
-          break;
-        case "end":
-          String[] newEndProperty = newValue.split("T");
-          String newEndDate = newEndProperty[0];
-          String newEndTime = newEndProperty[1];
-          e.subject(oldSubject);
-          e.startDate(oldStartDate);
-          e.startTime(oldStartTime);
-          e.endDate(LocalDate.parse(newEndDate));
-          e.endTime(LocalTime.parse(newEndTime));
-          e.description(oldDescription);
-          e.location(oldLocation);
-          e.isPrivate(oldStatus);
-          e.recurrenceDays(oldRecurrence);
-          e.occurrenceCount(oldOccurence);
-          break;
-        case "description":
-          e.subject(oldSubject);
-          e.startDate(oldStartDate);
-          e.startTime(oldStartTime);
-          e.endDate(oldEndDate);
-          e.endTime(oldEndTime);
-          e.description(newValue);
-          e.location(oldLocation);
-          e.isPrivate(oldStatus);
-          e.recurrenceDays(oldRecurrence);
-          e.occurrenceCount(oldOccurence);
-          break;
-        case "location":
-          e.location(newValue);
-          e.subject(oldSubject);
-          e.startDate(oldStartDate);
-          e.startTime(oldStartTime);
-          e.endDate(oldEndDate);
-          e.endTime(oldEndTime);
-          e.description(oldDescription);
-          e.isPrivate(oldStatus);
-          e.recurrenceDays(oldRecurrence);
-          e.occurrenceCount(oldOccurence);
-          break;
-        case "status":
-          e.subject(oldSubject);
-          e.startDate(oldStartDate);
-          e.startTime(oldStartTime);
-          e.endDate(oldEndDate);
-          e.endTime(oldEndTime);
-          e.location(oldLocation);
-          e.description(oldDescription);
-          e.recurrenceDays(oldRecurrence);
-          e.isPrivate(Boolean.parseBoolean(newValue));
-          break;
-      }
+    switch (property) {
+      case "subject":
+        e.subject(newValue);
+        e.startDate(oldStartDate);
+        e.startTime(oldStartTime);
+        e.endDate(oldEndDate);
+        e.endTime(oldEndTime);
+        e.description(oldDescription);
+        e.location(oldLocation);
+        e.isPrivate(oldStatus);
+        e.recurrenceDays(oldRecurrence);
+        e.occurrenceCount(oldOccurence);
+        break;
+      case "start":
+        String[] newStartProperty = newValue.split("T");
+        String newStartDate = newStartProperty[0];
+        String newStartTime = newStartProperty[1];
+        e.subject(oldSubject);
+        e.startDate(LocalDate.parse(newStartDate));
+        e.startTime(LocalTime.parse(newStartTime));
+        e.endDate(oldEndDate);
+        e.endTime(oldEndTime);
+        e.description(oldDescription);
+        e.location(oldLocation);
+        e.isPrivate(oldStatus);
+        e.recurrenceDays(oldRecurrence);
+        e.occurrenceCount(oldOccurence);
+        break;
+      case "end":
+        String[] newEndProperty = newValue.split("T");
+        String newEndDate = newEndProperty[0];
+        String newEndTime = newEndProperty[1];
+        e.subject(oldSubject);
+        e.startDate(oldStartDate);
+        e.startTime(oldStartTime);
+        e.endDate(LocalDate.parse(newEndDate));
+        e.endTime(LocalTime.parse(newEndTime));
+        e.description(oldDescription);
+        e.location(oldLocation);
+        e.isPrivate(oldStatus);
+        e.recurrenceDays(oldRecurrence);
+        e.occurrenceCount(oldOccurence);
+        break;
+      case "description":
+        e.subject(oldSubject);
+        e.startDate(oldStartDate);
+        e.startTime(oldStartTime);
+        e.endDate(oldEndDate);
+        e.endTime(oldEndTime);
+        e.description(newValue);
+        e.location(oldLocation);
+        e.isPrivate(oldStatus);
+        e.recurrenceDays(oldRecurrence);
+        e.occurrenceCount(oldOccurence);
+        break;
+      case "location":
+        e.location(newValue);
+        e.subject(oldSubject);
+        e.startDate(oldStartDate);
+        e.startTime(oldStartTime);
+        e.endDate(oldEndDate);
+        e.endTime(oldEndTime);
+        e.description(oldDescription);
+        e.isPrivate(oldStatus);
+        e.recurrenceDays(oldRecurrence);
+        e.occurrenceCount(oldOccurence);
+        break;
+      case "status":
+        e.subject(oldSubject);
+        e.startDate(oldStartDate);
+        e.startTime(oldStartTime);
+        e.endDate(oldEndDate);
+        e.endTime(oldEndTime);
+        e.location(oldLocation);
+        e.description(oldDescription);
+        e.recurrenceDays(oldRecurrence);
+        e.isPrivate(Boolean.parseBoolean(newValue));
+        break;
+    }
 
     return e.build();
 
@@ -246,6 +255,7 @@ public class CalendarModel implements IModel {
     String newValue = arg[arg.length - 1];
     LocalDateTime key = LocalDateTime.of(startDate, startTime);
 
+    // we know it is a date and time if it contains T
     if (newValue.contains("T")) {
       String[] newProperty = newValue.split("T");
       String newDate = newProperty[0];
@@ -270,6 +280,7 @@ public class CalendarModel implements IModel {
     }
 
 
+    // avoid mutations by creating a new event series
     EventSeriesBuilder e = new EventSeriesBuilder(eventSeriesSubject, startDate, startTime);
 
     // handles the one with all the fields
@@ -284,13 +295,13 @@ public class CalendarModel implements IModel {
           String[] dateAndTime = newValue.split("T");
           e.startDate(LocalDate.parse(dateAndTime[0]));
           e.startTime(LocalTime.parse(dateAndTime[1]));
-        } else if (newValue.contains(":")){
+        } else if (newValue.contains(":")) {
           // if it was only the time that is being changed
           e.startTime(LocalTime.parse(newValue));
         } else {
           // if only the date is being changed
           e.startDate(LocalDate.parse(newValue));
-      }
+        }
         break;
       case "end":
         // if they wanna just change the start date or just the start time
@@ -299,7 +310,7 @@ public class CalendarModel implements IModel {
           String[] dateAndTime = newValue.split("T");
           e.endDate(LocalDate.parse(dateAndTime[0]));
           e.endTime(LocalTime.parse(dateAndTime[1]));
-        } else if (newValue.contains(":")){
+        } else if (newValue.contains(":")) {
           // if it was only the time that is being changed
           e.endTime(LocalTime.parse(newValue));
         } else {
@@ -337,7 +348,9 @@ public class CalendarModel implements IModel {
     String newValue = arg[arg.length - 1];
     LocalDateTime key = LocalDateTime.of(startDate, startTime);
 
+    // finds the event it is referring to and holds onto it
     Event currentEvent = null;
+
     if (eventsByDate.containsKey(key)) {
       for (Event event : eventsByDate.get(key)) {
         if (event.getSubject().equals(eventSubject)) {
@@ -347,7 +360,7 @@ public class CalendarModel implements IModel {
       }
     }
 
-    // get and set the current properties
+    // get and set the current event properties
     String oldSubject = currentEvent.getSubject();
     LocalDate oldStartDate = currentEvent.getStartDate();
     LocalTime oldStartTime = currentEvent.getStartTime();
@@ -359,13 +372,14 @@ public class CalendarModel implements IModel {
     LocalDate endDate = oldEndDate;
     LocalTime endTime = oldEndTime;
 
+    // if it contains to then we know there is an existing end date in the input
     if (input.contains("to")) {
       String[] end = arg[7].split("T");
       endDate = LocalDate.parse(end[0]);
       endTime = LocalTime.parse(end[1]);
     }
 
-    // keep the old version
+    // keep the old version using the old variables we created
     EventBuilder e = new EventBuilder(oldSubject, oldStartDate, oldStartTime)
             .endDate(endDate)
             .endTime(endTime)
@@ -383,7 +397,7 @@ public class CalendarModel implements IModel {
           // separate the date and time
           String[] dateAndTime = newValue.split("T");
           e = e.startDate(LocalDate.parse(dateAndTime[0])).startTime(LocalTime.parse(dateAndTime[1]));
-        } else if (newValue.contains(":")){
+        } else if (newValue.contains(":")) {
           // if it was only the time that is being changed
           e.startTime(LocalTime.parse(newValue));
         } else {
@@ -395,25 +409,25 @@ public class CalendarModel implements IModel {
         if (newValue.contains("T")) {
           // separate the date and time
           String[] dateAndTime = newValue.split("T");
-          e= e.endDate(LocalDate.parse(dateAndTime[0])).endTime(LocalTime.parse(dateAndTime[1]));
-        } else if (newValue.contains(":")){
+          e = e.endDate(LocalDate.parse(dateAndTime[0])).endTime(LocalTime.parse(dateAndTime[1]));
+        } else if (newValue.contains(":")) {
           // if it was only the time that is being changed
-          e= e.endTime(LocalTime.parse(newValue));
+          e = e.endTime(LocalTime.parse(newValue));
         } else {
           // if only the date is being changed
-          e= e.endDate(LocalDate.parse(newValue));
+          e = e.endDate(LocalDate.parse(newValue));
         }
         break;
       case "description":
-        e= e.description(newValue);
+        e = e.description(newValue);
         break;
       case "location":
-        e= e.location(newValue);
+        e = e.location(newValue);
         break;
       case "status":
-        e= e.isPrivate(Boolean.parseBoolean(newValue));  // change the true to "false"
+        e = e.isPrivate(Boolean.parseBoolean(newValue));  // change the true to "false"
         break;
-        // throw exception if property is not a case
+      // throw exception if property is not a case
     }
 
     Event newEvent = e.build();

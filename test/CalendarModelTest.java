@@ -70,6 +70,21 @@ public class CalendarModelTest {
             model.createEvent("create event Hehe from 2025-03-23T12:00 to 2025-04-04T03:00");
   }
 
+  // subject with multiple words
+  @Test
+  public void testCreateEvents_MultipleSubjectWords() {
+    Event e =
+            model.createEvent("create event " + "Hehe Haha" + "from 2025-03-23T12:00 to 2025-04-04T03:00");
+
+    assertEquals("Hehe Haha", e.getSubject());
+    assertEquals("2025-03-23", e.getStartDate().toString());
+    assertEquals("12:00", e.getStartTime().toString());
+    assertEquals("2025-04-04", e.getEndDate().toString());
+    assertEquals("03:00", e.getEndTime().toString());
+    assertEquals("", e.getDescription());
+  }
+
+
   @Test
   public void testCreateEventSeries() {
     EventSeries e = model.createEventSeries("create event Yabba from " +
