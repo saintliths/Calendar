@@ -1,4 +1,4 @@
-package CalendarModel;
+package calendarModel;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import CalendarModel.Event.EventBuilder;
-import CalendarModel.EventSeries.EventSeriesBuilder;
+import calendarModel.Event.EventBuilder;
+import calendarModel.EventSeries.EventSeriesBuilder;
 
 /**
- *
+ * Class creates the events/event series, edit events/series, and queries the events.
  */
 public class CalendarModel implements IModel {
 
@@ -20,6 +20,12 @@ public class CalendarModel implements IModel {
   // a way to represent months and days LocalDate
   private String input;
 
+  /**
+   * Constructs a CalendarModel object.
+   *
+   * @param eventsByDate the hashmap that maps each event to a specific date
+   * @param eventSeriesByDate the hashmap that maps each event series to a specific date
+   */
   public CalendarModel(Map<LocalDateTime, List<Event>> eventsByDate,
                        Map<LocalDateTime, List<EventSeries>> eventSeriesByDate) {
     this.eventsByDate = eventsByDate;
@@ -35,6 +41,32 @@ public class CalendarModel implements IModel {
     return this.eventsByDate;
   }
 
+  // check if current event created matches any of the pre-existing events in the array list
+  public Boolean checkEventOverlap(Event ne) {
+    LocalDateTime startDateEvent = LocalDateTime.of(ne.getStartDate(), ne.getStartTime());
+
+    // checks every event in the existing map
+    if (eventsByDate.containsKey(startDateEvent)) {
+      // for all events with the same start date
+      for (Event event : eventsByDate.get(startDateEvent)) {
+        // check the subject is the same
+        boolean checkSubject = event.getSubject().equals(ne.getSubject());
+        // check fi the time is the same for the event since we already know the date
+        boolean checkStart = event.getStartDate().equals(ne.getStartDate()) && event.getStartTime().equals(ne.getStartTime());
+        // check if the end date and time  is the same
+        boolean checkEnd = event.getEndDate().equals(ne.getEndDate()) &&
+                event.getEndTime().equals(ne.getEndTime());
+
+        // when all conditions are true it returns true
+        if (checkSubject && checkStart && checkEnd) {
+          return true;
+        }
+      }
+    }
+    // when not all are true it returns false
+    return false;
+  }
+
   // create event <eventSubject> from <dateStringTtimeString> to <dateStringTtimeString>
   // 2025-07-06T03:22
   // create event <eventSubject> on <dateString>
@@ -47,9 +79,9 @@ public class CalendarModel implements IModel {
     LocalTime endTime = null;
 
     if (input.contains("on")) {
-      startDate = LocalDate.parse(arg[4]);
+      startDate = LocalDate.parse(arg[3]);
       startTime = LocalTime.of(8, 0);
-      endDate = LocalDate.parse(arg[4]);
+      endDate = LocalDate.parse(arg[3]);
       endTime = LocalTime.of(17, 0);
     }
 
@@ -68,10 +100,14 @@ public class CalendarModel implements IModel {
     EventBuilder e = new EventBuilder(arg[2], startDate, startTime);
     e.endDate(endDate).endTime(endTime);
 
-    // check if two events are the same
+    Event addedEvent = e.build();
 
-    // check if there are quotes
+    // check before adding to has
+    if (checkEventOverlap(addedEvent)) {
+      throw new IllegalArgumentException("Event already exists.");
+    }
 
+    // adds to hash
     if (eventsByDate.containsKey(LocalDateTime.of(startDate, startTime))) {
       eventsByDate.get(LocalDateTime.of(startDate, startTime)).add(e.build());
     } else {
@@ -80,7 +116,8 @@ public class CalendarModel implements IModel {
       eventsByDate.get(LocalDateTime.of(startDate, startTime)).add(e.build());
     }
 
-    return e.build();
+    return addedEvent;
+
   }
 
 
@@ -236,6 +273,8 @@ public class CalendarModel implements IModel {
         e.recurrenceDays(oldRecurrence);
         e.isPrivate(Boolean.parseBoolean(newValue));
         break;
+      default:
+        throw new IllegalArgumentException("No such property");
     }
 
     return e.build();
@@ -496,14 +535,36 @@ public class CalendarModel implements IModel {
     String[] date = arg[3].split("T");
     LocalDate eventDate = LocalDate.parse(date[0]);
     LocalTime eventTime = LocalTime.parse(date[1]);
+    LocalDateTime eventDateTime = LocalDateTime.of(eventDate, eventTime);
 
-    if (eventsByDate.containsKey(LocalDateTime.of(eventDate, eventTime))) {
-      List<Event> events = eventsByDate.get(LocalDateTime.of(eventDate, eventTime));
-      if (!events.isEmpty()) {
-        return "Busy";
+    if (eventsByDate.containsKey(eventDateTime) &&
+            !eventsByDate.get(eventDateTime).isEmpty()) {
+      for (Map.Entry<LocalDateTime, List<Event>> entry : eventsByDate.entrySet()) {
+        for (Event event : entry.getValue()) {
+          LocalTime start = event.getStartTime();
+          LocalTime end = event.getEndTime();
+
+          if ((eventTime.equals(start) || eventTime.isAfter(start))
+                  && eventTime.isBefore(end)) {
+            return "Busy";
+          }
+        }
+      }
+    } else if (eventSeriesByDate.containsKey(eventDateTime) &&
+            !eventSeriesByDate.get(eventDateTime).isEmpty()) {
+      for (Map.Entry<LocalDateTime, List<EventSeries>> entry : eventSeriesByDate.entrySet()) {
+        for (EventSeries eventSeries : entry.getValue()) {
+          LocalTime start = eventSeries.getStartTime();
+          LocalTime end = eventSeries.getEndTime();
+
+          if ((eventTime.equals(start) || eventTime.isAfter(start))
+                  && eventTime.isBefore(end)) {
+            return "Busy";
+          }
+        }
       }
     }
-    return "Not busy";
+      return "Not Busy";
   }
 
-}
+  }

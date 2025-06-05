@@ -1,4 +1,4 @@
-package CalendarModel;
+package calendarModel;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -19,14 +19,15 @@ public class Event {
 
   /**
    * Public constructor for an Event.
-   * @param subject the subject of the event
-   * @param startDate the start date of the event
-   * @param startTime the time the event starts
-   * @param endDate the end date of the event
-   * @param endTime the time the event ends
+   *
+   * @param subject     the subject of the event
+   * @param startDate   the start date of the event
+   * @param startTime   the time the event starts
+   * @param endDate     the end date of the event
+   * @param endTime     the time the event ends
    * @param description description of the event
-   * @param location location of the event
-   * @param isPrivate whether is it private or public
+   * @param location    location of the event
+   * @param isPrivate   whether is it private or public
    */
   public Event(String subject, LocalDate startDate, LocalTime startTime, LocalDate endDate,
                LocalTime endTime, String description, String location, boolean isPrivate) {
@@ -57,7 +58,7 @@ public class Event {
     /**
      * Constructs an EventBuilder object.
      *
-     * @param subject the subject of the event
+     * @param subject   the subject of the event
      * @param startDate the start date of the event
      * @param startTime the start time of the event
      */
@@ -95,7 +96,7 @@ public class Event {
     }
 
     /**
-     * Changes the endDate to the given end date
+     * Changes the endDate to the given end date.
      *
      * @param e the given end date
      * @return this builder
@@ -111,7 +112,8 @@ public class Event {
     }
 
     /**
-     * Changes the end time to the given time
+     * Changes the end time to the given time.
+     *
      * @param e the given time
      * @return this builder
      */
@@ -121,7 +123,8 @@ public class Event {
     }
 
     /**
-     * Changes the description to the given string
+     * Changes the description to the given string.
+     *
      * @param d the given string/new description
      * @return this builder
      */
@@ -131,7 +134,8 @@ public class Event {
     }
 
     /**
-     * Changes the location to the given string
+     * Changes the location to the given string.
+     *
      * @param l
      * @return
      */
@@ -141,7 +145,8 @@ public class Event {
     }
 
     /**
-     * Changes the isPrivate to the given boolean
+     * Changes the isPrivate to the given boolean.
+     *
      * @param p
      * @return
      */
@@ -152,6 +157,7 @@ public class Event {
 
     /**
      *
+     * Constructs a new event instance.
      * @return
      */
     public Event build() {
@@ -161,46 +167,74 @@ public class Event {
 
   }
 
+  /**
+   * Gets the corresponding subject of an event.
+   * @return String
+   */
   public String getSubject() {
     return this.subject;
   }
 
+  /**
+   * Gets the corresponding startDate of an event.
+   * @return LocalDate
+   */
   public LocalDate getStartDate() {
     return this.startDate;
   }
 
+  /**
+   * Gets the corresponding startTime of an event.
+   * @return LocalTime
+   */
   public LocalTime getStartTime() {
     return this.startTime;
   }
 
+  /**
+   * Gets the corresponding endDate of an event.
+   * @return LocalDate
+   */
   public LocalDate getEndDate() {
     return this.endDate;
   }
 
+  /**
+   * Gets the corresponding endTime of an event.
+   * @return LocalTime
+   */
   public LocalTime getEndTime() {
     return this.endTime;
   }
 
+  /**
+   * Gets the corresponding description of an event.
+   * @return String
+   */
   public String getDescription() {
     return description;
   }
 
+  /**
+   * Gets the corresponding location of an event.
+   * @return String
+   */
 
   public String getLocation() {
     return location;
   }
 
 
+  /**
+   * Gets the corresponding status of an event.
+   * @return boolean
+   */
   public boolean isPrivate() {
     return isPrivate;
   }
 
-  public boolean checkEventOverlap(Object o) {
-    return false;
-  }
-
   /**
-   * Overrides Java's toString method
+   * Overrides Java's toString method.
    * @return this event as a String with subject, startTime, endTime, and location
    */
   @Override

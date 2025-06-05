@@ -1,4 +1,4 @@
-package CalendarModel;
+package calendarModel;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,6 +18,13 @@ public interface IModel {
   Event createEvent(String input);
 
   /**
+   * Checks if the event already exists within the hashmap.
+   * @param ne is the event being compared
+   * @return true/false
+   */
+  Boolean checkEventOverlap(Event ne);
+
+  /**
    * Creates a series of events.
    *
    * @param input the user input
@@ -34,22 +41,29 @@ public interface IModel {
   Event editEvent(String input);
 
   /**
-   * Edit a series of events.
+   * Edit an event and if it's part of a series, edit this event and the ones after it.
    *
    * @param input the user input
    * @return an EventSeries after it has been edited
    */
   EventSeries editEventSeries(String input);
 
+
+  /**
+   * Edit an entire series of events.
+   *
+   * @param input the user input
+   * @return an EventSeries after it has been edited
+   */
+  EventSeries editSeries(String input);
+
+
   /**
    * Print out all the events on a given date or within a given interval.
    *
    * @param input the user input
-   * @return a List<String> containing all the events to be printed
+   * @return a List of strings containing all the events to be printed
    */
-
-  EventSeries editSeries(String input);
-
   List<String> printEvents(String input);
 
   /**
@@ -62,7 +76,7 @@ public interface IModel {
 
   /**
    * Getter that gets the hash map of this model
-   * @return a Map of LocalDateTime and List<Event>
+   * @return a Map of LocalDateTime and List of events
    */
   Map<LocalDateTime, List<Event>> getHashMap();
 }

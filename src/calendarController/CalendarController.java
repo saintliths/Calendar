@@ -1,10 +1,10 @@
-package CalendarController;
+package calendarController;
 
 import java.io.InputStream;
 import java.util.Scanner;
 
-import CalendarModel.IModel;
-import CalendarView.IView;
+import calendarModel.IModel;
+import calendarView.IView;
 
 /**
  * This class represents the controller implementation for a calendar.
