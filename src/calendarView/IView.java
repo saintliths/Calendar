@@ -1,4 +1,4 @@
-package CalendarView;
+package calendarView;
 
 import java.util.List;
 

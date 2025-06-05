@@ -1,4 +1,4 @@
-package CalendarModel;
+package calendarModel;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import CalendarModel.Event.EventBuilder;
-import CalendarModel.EventSeries.EventSeriesBuilder;
+import calendarModel.Event.EventBuilder;
+import calendarModel.EventSeries.EventSeriesBuilder;
 
 /**
  * Class creates the events/event series, edit events/series, and queries the events.

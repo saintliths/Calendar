@@ -1,4 +1,4 @@
-package CalendarView;
+package calendarView;
 
 import java.io.PrintStream;
 import java.util.List;

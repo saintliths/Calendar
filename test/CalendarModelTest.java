@@ -7,10 +7,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import CalendarModel.CalendarModel;
-import CalendarModel.Event;
-import CalendarModel.EventSeries;
-import CalendarModel.IModel;
+import calendarModel.CalendarModel;
+import calendarModel.Event;
+import calendarModel.EventSeries;
+import calendarModel.IModel;
 
 import static org.junit.Assert.assertEquals;
 

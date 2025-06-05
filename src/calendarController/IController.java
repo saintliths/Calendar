@@ -1,4 +1,4 @@
-package CalendarController;
+package calendarController;
 
 /**
  * Represents the interface for the controller.

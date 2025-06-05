@@ -1,4 +1,4 @@
-package CalendarModel;
+package calendarModel;
 
 import java.time.LocalDateTime;
 import java.util.List;

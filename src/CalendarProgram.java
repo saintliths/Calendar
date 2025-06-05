@@ -3,12 +3,12 @@ import java.io.InputStream;
 import java.io.FileInputStream;
 import java.util.HashMap;
 
-import CalendarController.CalendarController;
-import CalendarController.IController;
-import CalendarModel.CalendarModel;
-import CalendarModel.IModel;
-import CalendarView.CalendarView;
-import CalendarView.IView;
+import calendarController.CalendarController;
+import calendarController.IController;
+import calendarModel.CalendarModel;
+import calendarModel.IModel;
+import calendarView.CalendarView;
+import calendarView.IView;
 
 /**
  * This class represents our Calendar Program with main.
