@@ -117,7 +117,6 @@ public class CalendarModelTest {
     assertEquals("2025-04-04", newEvent.getEndDate().toString());
     assertEquals("03:00", newEvent.getEndTime().toString());
     assertEquals("", newEvent.getDescription());
-
   }
 
   @Test
@@ -135,6 +134,21 @@ public class CalendarModelTest {
     assertEquals("2025-04-04", newEvent2.getEndDate().toString());
     assertEquals("03:00", newEvent2.getEndTime().toString());
     assertEquals("", newEvent2.getDescription());
+  }
+
+
+  @Test
+  public void testEditEvent_changeLocation() {
+    model.createEvent("create event class from 2025-07-06T12:00 to 2025-07-06T13:00");
+    Event updated = model.editEvent("edit event location class from 2025-07-06T12:00 to 2025-07-06T13:00 with home");
+    assertEquals("home", updated.getLocation());
+  }
+
+  @Test
+  public void testEditEvent_changeSubject() {
+    model.createEvent("create event class from 2025-07-06T08:00 to 2025-07-06T09:00");
+    Event updated = model.editEvent("edit event subject class from 2025-07-06T08:00 to 2025-07-06T09:00 with study");
+    assertEquals("study", updated.getSubject());
   }
 
   @Test
@@ -225,6 +239,51 @@ public class CalendarModelTest {
     String actual = model.showStatus("show status on 2025-03-23T07:00");
     assertEquals("Not Busy", actual);
   }
+
+
+  // test event toString
+  @Test
+  public void testToString() {
+
+  }
+
+  // test checkEventOverlap
+
+  // test isPrivate
+
+  // test getLocation
+
+  // test getDescription
+
+  // test getEndTime
+
+  // test getEndDate
+
+  // test getStartTim
+
+  // test getStartDate
+
+  // test getSubject
+
+  // test Event Build
+
+  // test EventBuilder isPrivate(boolean p)
+
+  // test EventBuilder location(String l)
+
+  // test EventBuilder description(String d)
+
+  // test EventBuilder endTime(LocalTime e)
+
+  // test EventBuilder subject(String s)
+
+  // test EventBuilder endDate(LocalDate e)
+
+  // test EventBuilder startTime(LocalTime s)
+
+  // test EventBuilder startDate(LocalDate s)
+
+
 
 
 
