@@ -35,6 +35,21 @@ public class CalendarModel implements IModel {
     return this.eventsByDate;
   }
 
+  // check if current event created matches any of the pre existing events in the array list
+  public boolean checkEventOverlap(Event ne) {
+    LocalDateTime startDateEvent = LocalDateTime.of(ne.getStartDate(), ne.getStartTime());
+
+    if (eventsByDate.containsKey(startDateEvent)) {
+      for (Event event : eventsByDate.get(startDateEvent)) {
+        boolean checkSubject = event.getSubject().equals(ne.getSubject());
+        boolean checkStart = event.getStartDate().equals(ne.build().getStartDate()) && event.getStartTime().equals(ne.build().getStartTime());
+        boolean checkEnd = event.getEndDate().equals(ne.build().getEndDate()) && event.getEndTime().equals(ne.build().getEndTime());
+      }
+    }
+    return null;
+
+  }
+
   // create event <eventSubject> from <dateStringTtimeString> to <dateStringTtimeString>
   // 2025-07-06T03:22
   // create event <eventSubject> on <dateString>
@@ -68,9 +83,7 @@ public class CalendarModel implements IModel {
     EventBuilder e = new EventBuilder(arg[2], startDate, startTime);
     e.endDate(endDate).endTime(endTime);
 
-    // check if two events are the same
 
-    // check if there are quotes
 
     if (eventsByDate.containsKey(LocalDateTime.of(startDate, startTime))) {
       eventsByDate.get(LocalDateTime.of(startDate, startTime)).add(e.build());
@@ -81,6 +94,7 @@ public class CalendarModel implements IModel {
     }
 
     return e.build();
+
   }
 
 

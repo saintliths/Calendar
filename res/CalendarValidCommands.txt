@@ -1,7 +1,9 @@
 Creating Events
 
+// create a single event with end date in the calender
 create event <eventSubject> from <dateStringTtimeString> to <dateStringTtimeString>
 
+// creates an event that repeats N times on specific weekdays
 create event <eventSubject> from <dateStringTtimeString> to <dateStringTtimeString> repeats <weekdays> for <N> times
 
 // creates an event series until a specific date (inclusive)
@@ -15,3 +17,31 @@ create event <eventSubject> on <dateString> repeats <weekdays> for <N> times
 
 // to create a series of all day events until a specified date
 create event <eventSubject> on <dateString> repeats <weekdays> until <dateString>
+
+
+Editing Events
+
+// changes the property of the given event (irrespective of whether it is single or part of a series)
+edit event <property> <eventSubject> from <dateStringTtimeString> to <dateStringTtimeString> with <NewPropertyValue>
+
+// Identify the event that has the given subject and starts at the given date and time and edit its property.
+// If this event is part of a series then the properties of all events in that series that start at
+// or after the given date and time should be changed.
+// If this event is not part of a series then this has the same effect as the command above.
+edit events <property> <eventSubject> from <dateStringTtimeString> with <NewPropertyValue>
+
+// If this event is part of a series then the properties of all events in that series that start at or
+// after the given date and time should be changed.
+// If this event is not part of a series then this has the same effect as the command above.
+edit series <property> <eventSubject> from <dateStringTtimeString> with <NewPropertyValue>
+
+Queries
+
+// Prints a bulleted list of all events on that day along with their start and end time and location (if any).
+print events on <dateString>
+
+// Prints a bulleted list of all events in the given interval including their start and end times and location (if any).
+print events from <dateStringTtimeString> to <dateStringTtimeString>
+
+// Prints busy status if the user has events scheduled on a given day and time, otherwise, available.
+show status on <dateStringTtimeString>

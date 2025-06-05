@@ -61,15 +61,6 @@ public class CalendarModelTest {
     assertEquals("", d.getDescription());
   }
 
-  // throw error
-  @Test
-  public void testCreateEvents_SameEndDate() {
-    Event e =
-            model.createEvent("create event Hehe from 2025-03-23T12:00 to 2025-04-04T03:00");
-    Event d =
-            model.createEvent("create event Hehe from 2025-03-23T12:00 to 2025-04-04T03:00");
-  }
-
   // throw exception if a property has more than its expected
   @Test
   public void testCreateEvents_MultipleSubjectWords() {
@@ -244,8 +235,15 @@ public class CalendarModelTest {
   // test event toString
   @Test
   public void testToString() {
-
+    Event e =
+            model.createEvent("create event Hehe from 2025-03-23T12:00 to 2025-04-04T03:00");
+    Event d =
+            model.createEvent("create event Hehe from 2025-03-23T12:00 to 2025-04-04T03:00");
   }
+
+  // test checkEventOverlap
+
+
 
   // test inclusivity for creating event series until a specific date
 
