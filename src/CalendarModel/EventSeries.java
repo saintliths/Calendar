@@ -1,11 +1,7 @@
 package CalendarModel;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.UUID;
 
 /**
  * Represents a series of events.
@@ -25,21 +21,22 @@ public class EventSeries {
 
   /**
    * Private constructor for an EventSeries.
-   * @param subject the subject of the event
-   * @param startDate the start date of the event
-   * @param startTime the time the event starts
-   * @param endDate the end date of the event
-   * @param endTime the time the event ends
-   * @param description description of the event
-   * @param location location of the event
-   * @param isPrivate whether is it private or public
-   * @param recurrenceDays what days the event repeats on
+   *
+   * @param subject         the subject of the event
+   * @param startDate       the start date of the event
+   * @param startTime       the time the event starts
+   * @param endDate         the end date of the event
+   * @param endTime         the time the event ends
+   * @param description     description of the event
+   * @param location        location of the event
+   * @param isPrivate       whether is it private or public
+   * @param recurrenceDays  what days the event repeats on
    * @param occurrenceCount how many times the event repeat
-   * @param untilDate when does the event repeat until
+   * @param untilDate       when does the event repeat until
    */
   public EventSeries(String subject, LocalDate startDate, LocalTime startTime, LocalDate endDate,
-               LocalTime endTime, String description, String location, boolean isPrivate,
-                     String recurrenceDays, int occurrenceCount,  LocalDate untilDate) {
+                     LocalTime endTime, String description, String location, boolean isPrivate,
+                     String recurrenceDays, int occurrenceCount, LocalDate untilDate) {
     this.subject = subject;
     this.startDate = startDate;
     this.startTime = startTime;
@@ -51,15 +48,6 @@ public class EventSeries {
     this.recurrenceDays = recurrenceDays;
     this.occurrenceCount = occurrenceCount;
     this.untilDate = untilDate;
-  }
-
-  /**
-   * Getter for EventSeriesBuilder.
-   *
-   * @return the Builder object for this class
-   */
-  public EventSeriesBuilder getBuilder() {
-    return new EventSeriesBuilder(this.subject, this.startDate, this.startTime);
   }
 
   /**
@@ -79,29 +67,50 @@ public class EventSeries {
     private LocalDate untilDate;
 
     /**
+     * Constructs an EventSeriesBuilder object.
      *
-     * @param subject
-     * @param startDate
-     * @param startTime
+     * @param subject the subject of the event series
+     * @param startDate the start date of the event series
+     * @param startTime the start time of the event series
      */
     public EventSeriesBuilder(String subject, LocalDate startDate, LocalTime startTime) {
       this.subject = subject;
       this.startDate = startDate;
       this.startTime = startTime;
       this.endDate = startDate;
+      this.endTime = LocalTime.of(17, 0);
       this.recurrenceDays = "";
       this.occurrenceCount = 0;
       this.untilDate = endDate;
-      this.endTime = LocalTime.MIDNIGHT;
       this.description = "";
       this.location = "";
       this.isPrivate = false;
     }
 
     /**
-     *
-     * @param e
-     * @return
+     * Changes the startDate to the given start date
+     * @param s the given startDate
+     * @return this builder
+     */
+    public EventSeriesBuilder startDate(LocalDate s) {
+      this.startDate = s;
+      return this;
+    }
+
+    /**
+     * Changes the startTime to the given start time
+     * @param s the given start time
+     * @return this builder
+     */
+    public EventSeriesBuilder startTime(LocalTime s) {
+      this.startTime = s;
+      return this;
+    }
+
+    /**
+     * Changes the endDate to the given end date
+     * @param e the given end date
+     * @return this builder
      */
     public EventSeriesBuilder endDate(LocalDate e) {
       this.endDate = e;
@@ -109,7 +118,6 @@ public class EventSeries {
     }
 
     /**
-     *
      * @param e
      * @return
      */
@@ -118,8 +126,12 @@ public class EventSeries {
       return this;
     }
 
+    public EventSeriesBuilder subject(String s) {
+      this.subject = s;
+      return this;
+    }
+
     /**
-     *
      * @param d
      * @return
      */
@@ -129,7 +141,6 @@ public class EventSeries {
     }
 
     /**
-     *
      * @param l
      * @return
      */
@@ -139,7 +150,6 @@ public class EventSeries {
     }
 
     /**
-     *
      * @param p
      * @return
      */
@@ -149,7 +159,6 @@ public class EventSeries {
     }
 
     /**
-     *
      * @param r
      * @return
      */
@@ -159,7 +168,6 @@ public class EventSeries {
     }
 
     /**
-     *
      * @param c
      * @return
      */
@@ -169,7 +177,6 @@ public class EventSeries {
     }
 
     /**
-     *
      * @param u
      * @return
      */
@@ -179,7 +186,6 @@ public class EventSeries {
     }
 
     /**
-     *
      * @return
      */
     public EventSeries build() {

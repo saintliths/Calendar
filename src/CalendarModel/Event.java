@@ -41,19 +41,10 @@ public class Event {
   }
 
   /**
-   * A Getter for the inner builder class.
-   *
-   * @return a builder for this event
-   */
-  public EventBuilder getBuilder() {
-    return new EventBuilder(this.subject, this.startDate, this.startTime);
-  }
-
-  /**
    * This class represents an inner builder class that builds some of the fields
    * of this event.
    */
-   static class EventBuilder {
+  static class EventBuilder {
     private String subject;
     private LocalDate startDate;
     private LocalTime startTime;
@@ -63,13 +54,13 @@ public class Event {
     private String location;
     private boolean isPrivate;
 
-     /**
-      * Constructs an EventBuilder object.
-      *
-      * @param subject the subject of the event
-      * @param startDate the start date of the event
-      * @param startTime the start time of the event
-      */
+    /**
+     * Constructs an EventBuilder object.
+     *
+     * @param subject the subject of the event
+     * @param startDate the start date of the event
+     * @param startTime the start time of the event
+     */
     public EventBuilder(String subject, LocalDate startDate, LocalTime startTime) {
       this.subject = subject;
       this.startDate = startDate;
@@ -81,77 +72,88 @@ public class Event {
       this.isPrivate = false;
     }
 
+    /**
+     * Changes the startDate to the given start date.
+     *
+     * @param s the given startDate
+     * @return this builder
+     */
     public EventBuilder startDate(LocalDate s) {
       this.startDate = s;
       return this;
     }
 
+    /**
+     * Changes the startTime to the given start time.
+     *
+     * @param s the given start time
+     * @return this builder
+     */
     public EventBuilder startTime(LocalTime s) {
       this.startTime = s;
       return this;
     }
 
-     /**
-      * Changes the end date to the given date
-      * @param e the given date
-      *
-      * @return this builder
-      */
-
-     public EventBuilder endDate(LocalDate e) {
-       this.endDate = e;
-       return this;
-     }
+    /**
+     * Changes the endDate to the given end date
+     *
+     * @param e the given end date
+     * @return this builder
+     */
+    public EventBuilder endDate(LocalDate e) {
+      this.endDate = e;
+      return this;
+    }
 
     public EventBuilder subject(String s) {
       this.subject = s;
       return this;
     }
 
-     /**
-      * Changes the end time to the given time
-      * @param e the given time
-      * @return this builder
-      */
+    /**
+     * Changes the end time to the given time
+     * @param e the given time
+     * @return this builder
+     */
     public EventBuilder endTime(LocalTime e) {
       this.endTime = e;
       return this;
     }
 
-     /**
-      * Changes the description to the given string
-      * @param d the given string/new description
-      * @return this builder
-      */
+    /**
+     * Changes the description to the given string
+     * @param d the given string/new description
+     * @return this builder
+     */
     public EventBuilder description(String d) {
       this.description = d;
       return this;
     }
 
-     /**
-      * Changes the location to the given string
-      * @param l
-      * @return
-      */
+    /**
+     * Changes the location to the given string
+     * @param l
+     * @return
+     */
     public EventBuilder location(String l) {
       this.location = l;
       return this;
     }
 
-     /**
-      * Changes the isPrivate to the given boolean
-      * @param p
-      * @return
-      */
+    /**
+     * Changes the isPrivate to the given boolean
+     * @param p
+     * @return
+     */
     public EventBuilder isPrivate(boolean p) {
       this.isPrivate = p;
       return this;
     }
 
-     /**
-      *
-      * @return
-      */
+    /**
+     *
+     * @return
+     */
     public Event build() {
       return new Event(subject, startDate, startTime, endDate, endTime,
               description, location, isPrivate);
@@ -195,6 +197,15 @@ public class Event {
 
   public boolean checkEventOverlap(Object o) {
     return false;
+  }
+
+  /**
+   * Overrides Java's toString method
+   * @return this event as a String with subject, startTime, endTime, and location
+   */
+  @Override
+  public String toString() {
+    return subject + " " + startTime + " " + endTime + " " + location;
   }
 
 }
