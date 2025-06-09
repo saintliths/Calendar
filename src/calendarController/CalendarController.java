@@ -1,16 +1,16 @@
-package calendarController;
+package calendarcontroller;
 
 import java.io.InputStream;
 import java.util.Scanner;
 
-import calendarModel.IModel;
-import calendarView.IView;
+import calendarmodel.IModel;
+import calendarview.IView;
 
 /**
  * This class represents the controller implementation for a calendar.
  */
 public class CalendarController implements IController {
-  private final InputStream in;
+  private final Readable in;
   private final IView view;
   private final IModel model;
 
@@ -21,7 +21,7 @@ public class CalendarController implements IController {
    * @param in    the user input
    * @param view  the view that is passed into this controller
    */
-  public CalendarController(IModel model, InputStream in, IView view) {
+  public CalendarController(IModel model, Readable in, IView view) {
     this.model = model;
     this.view = view;
     this.in = in;
@@ -29,11 +29,12 @@ public class CalendarController implements IController {
   }
 
   @Override
-  public void go() {
+  public void control() {
     boolean quit = false;
+    view.printOptions();
+    
     Scanner input = new Scanner(in);
     String in = input.nextLine();
-    System.out.println(in);
 
     // create event <eventSubject> from <dateStringTtimeString> to <dateStringTtimeString>
 

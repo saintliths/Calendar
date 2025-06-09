@@ -1,4 +1,4 @@
-package calendarModel;
+package calendarmodel;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -20,7 +20,7 @@ public class EventSeries {
   private final LocalDate untilDate;
 
   /**
-   * Private constructor for an EventSeries.
+   * Public constructor for an EventSeries.
    *
    * @param subject         the subject of the event
    * @param startDate       the start date of the event
@@ -69,7 +69,7 @@ public class EventSeries {
     /**
      * Constructs an EventSeriesBuilder object.
      *
-     * @param subject the subject of the event series
+     * @param subject   the subject of the event series
      * @param startDate the start date of the event series
      * @param startTime the start time of the event series
      */
@@ -88,7 +88,8 @@ public class EventSeries {
     }
 
     /**
-     * Changes the startDate to the given start date
+     * Changes the startDate to the given start date.
+     *
      * @param s the given startDate
      * @return this builder
      */
@@ -98,7 +99,8 @@ public class EventSeries {
     }
 
     /**
-     * Changes the startTime to the given start time
+     * Changes the startTime to the given start time.
+     *
      * @param s the given start time
      * @return this builder
      */
@@ -108,7 +110,8 @@ public class EventSeries {
     }
 
     /**
-     * Changes the endDate to the given end date
+     * Changes the endDate to the given end date.
+     *
      * @param e the given end date
      * @return this builder
      */
@@ -184,7 +187,7 @@ public class EventSeries {
     }
 
     /**
-     * Changes the occurrenceCount to the given occurrence count
+     * Changes the occurrenceCount to the given occurrence count.
      *
      * @param c the given occurrence count
      * @return this builder
@@ -195,7 +198,7 @@ public class EventSeries {
     }
 
     /**
-     * Changes the untilDate to the given until date
+     * Changes the untilDate to the given until date.
      *
      * @param u the given until date
      * @return this builder
@@ -207,6 +210,7 @@ public class EventSeries {
 
     /**
      * Builds an EventSeries from these fields.
+     *
      * @return an EventSeries object.
      */
     public EventSeries build() {
@@ -218,6 +222,7 @@ public class EventSeries {
 
   /**
    * Get the subject.
+   *
    * @return a String representing this subject
    */
   public String getSubject() {
@@ -226,6 +231,7 @@ public class EventSeries {
 
   /**
    * Get the start date.
+   *
    * @return a LocalDate representing this start date
    */
   public LocalDate getStartDate() {
@@ -234,6 +240,7 @@ public class EventSeries {
 
   /**
    * Get the start time.
+   *
    * @return a LocalTime representing this start time.
    */
   public LocalTime getStartTime() {
@@ -242,6 +249,7 @@ public class EventSeries {
 
   /**
    * Get the end date.
+   *
    * @return a LocalDate representing this end date.
    */
   public LocalDate getEndDate() {
@@ -250,6 +258,7 @@ public class EventSeries {
 
   /**
    * Get the end time.
+   *
    * @return a LocalTime representing this end time.
    */
   public LocalTime getEndTime() {
@@ -258,6 +267,7 @@ public class EventSeries {
 
   /**
    * Get the recurrence days.
+   *
    * @return a String representing this recurrence days.
    */
   public String getRecurrenceDays() {
@@ -266,6 +276,7 @@ public class EventSeries {
 
   /**
    * Gets the corresponding number of occurrences of an event series.
+   *
    * @return Number of occurrences.
    */
   public int getOccurrenceCount() {
@@ -274,6 +285,7 @@ public class EventSeries {
 
   /**
    * Gets the corresponding endDate of event series.
+   *
    * @return LocalDate of the end.
    */
   public LocalDate getUntilDate() {
@@ -282,6 +294,7 @@ public class EventSeries {
 
   /**
    * Gets the corresponding description of event series.
+   *
    * @return description of the event
    */
   public String getDescription() {
@@ -291,6 +304,7 @@ public class EventSeries {
 
   /**
    * Gets the corresponding location of event series.
+   *
    * @return String of the location
    */
   public String getLocation() {
@@ -300,6 +314,7 @@ public class EventSeries {
 
   /**
    * Gets the corresponding status of event series.
+   *
    * @return true for private status
    */
   public boolean isPrivate() {

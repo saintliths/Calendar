@@ -1,7 +1,6 @@
 import org.junit.Before;
 import org.junit.Test;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -132,18 +131,19 @@ public class CalendarModelTest {
     assertEquals("", newEvent2.getDescription());
   }
 
-
   @Test
   public void testEditEvent_changeLocation() {
     model.createEvent("create event class from 2025-07-06T12:00 to 2025-07-06T13:00");
-    Event updated = model.editEvent("edit event location class from 2025-07-06T12:00 to 2025-07-06T13:00 with home");
+    Event updated = model.editEvent("edit event location class from 2025-07-06T12:00 to " +
+            "2025-07-06T13:00 with home");
     assertEquals("home", updated.getLocation());
   }
 
   @Test
   public void testEditEvent_changeSubject() {
     model.createEvent("create event class from 2025-07-06T08:00 to 2025-07-06T09:00");
-    Event updated = model.editEvent("edit event subject class from 2025-07-06T08:00 to 2025-07-06T09:00 with study");
+    Event updated = model.editEvent("edit event subject class from 2025-07-06T08:00 to " +
+            "2025-07-06T09:00 with study");
     assertEquals("study", updated.getSubject());
   }
 
@@ -155,7 +155,6 @@ public class CalendarModelTest {
     EventSeries e = model.createEventSeries("create event Yabba from " +
             "2025-09-23T04:56 to 2025-09-23T09:33 " +
             "repeats MWF for 5 times");
-    System.out.print(e.getEndTime());
 
     // change all subjects of all the events part of the series on or after the start date
     EventSeries newSeries = model.editEventSeries("edit events subject Yabba from " +
@@ -181,7 +180,6 @@ public class CalendarModelTest {
     EventSeries e = model.createEventSeries("create event Yabba from "
             + "2025-09-23T04:56 to 2025-09-23T09:33 "
             + "repeats MWF for 5 times");
-    System.out.print(e.getEndTime());
 
     // change all subjects of all the events part of the series on or after the start date
     EventSeries newSeries = model.editEventSeries("edit events subject Yabba from "
@@ -197,6 +195,86 @@ public class CalendarModelTest {
     assertEquals("2025-09-23", newSeries.getUntilDate().toString());
     // else if the event is not part of the series
     // change only that singular event
+  }
+
+  @Test
+  public void testEditEvents_ChangeStartDate() {
+    this.setUp();
+    EventSeries e = model.createEventSeries("create event Yabba from " +
+            "2025-09-23T04:56 to 2025-09-23T09:23 " +
+            "repeats MWF for 5 times");
+
+    EventSeries newSeries = model.editEventSeries("edit events start Yabba from " +
+            "2025-09-23T04:56 with 2025-10-23T09:23");
+
+    assertEquals("Yabba", newSeries.getSubject());
+    assertEquals("2025-10-23", newSeries.getStartDate().toString());
+    assertEquals("09:23", newSeries.getStartTime().toString());
+    assertEquals("2025-09-23", newSeries.getEndDate().toString());
+    assertEquals("09:23", newSeries.getEndTime().toString());
+    assertEquals("MWF", newSeries.getRecurrenceDays());
+    assertEquals(5, newSeries.getOccurrenceCount());
+    assertEquals("2025-09-23", newSeries.getUntilDate().toString());
+  }
+
+  @Test
+  public void testEditEvents_ChangeStartTime() {
+    this.setUp();
+    EventSeries e = model.createEventSeries("create event Yabba from " +
+            "2025-09-23T04:56 to 2025-09-23T09:23 " +
+            "repeats MWF for 5 times");
+
+    EventSeries newSeries = model.editEventSeries("edit events start Yabba from " +
+            "2025-09-23T04:56 with 2025-09-23T10:23");
+
+    assertEquals("Yabba", newSeries.getSubject());
+    assertEquals("2025-09-23", newSeries.getStartDate().toString());
+    assertEquals("10:23", newSeries.getStartTime().toString());
+    assertEquals("2025-09-23", newSeries.getEndDate().toString());
+    assertEquals("09:23", newSeries.getEndTime().toString());
+    assertEquals("MWF", newSeries.getRecurrenceDays());
+    assertEquals(5, newSeries.getOccurrenceCount());
+    assertEquals("2025-09-23", newSeries.getUntilDate().toString());
+  }
+
+  @Test
+  public void testEditEvents_ChangeEndDate() {
+    this.setUp();
+    EventSeries e = model.createEventSeries("create event Yabba from " +
+            "2025-09-23T04:56 to 2025-09-23T09:23 " +
+            "repeats MWF for 5 times");
+
+    EventSeries newSeries = model.editEventSeries("edit events end Yabba from " +
+            "2025-09-23T04:56 with 2000-09-23T09:23");
+
+    assertEquals("Yabba", newSeries.getSubject());
+    assertEquals("2025-09-23", newSeries.getStartDate().toString());
+    assertEquals("04:56", newSeries.getStartTime().toString());
+    assertEquals("2000-09-23", newSeries.getEndDate().toString());
+    assertEquals("09:23", newSeries.getEndTime().toString());
+    assertEquals("MWF", newSeries.getRecurrenceDays());
+    assertEquals(5, newSeries.getOccurrenceCount());
+    assertEquals("2025-09-23", newSeries.getUntilDate().toString());
+  }
+
+  @Test
+  public void testEditEvents_ChangeEndTime() {
+    this.setUp();
+    EventSeries e = model.createEventSeries("create event Yabba from " +
+            "2025-09-23T04:56 to 2025-09-23T09:23 " +
+            "repeats MWF for 5 times");
+
+    EventSeries newSeries = model.editEventSeries("edit events end Yabba from " +
+            "2025-09-23T04:56 with 2000-09-23T09:22");
+
+    assertEquals("Yabba", newSeries.getSubject());
+    assertEquals("2025-09-23", newSeries.getStartDate().toString());
+    assertEquals("04:56", newSeries.getStartTime().toString());
+    assertEquals("2000-09-23", newSeries.getEndDate().toString());
+    assertEquals("09:22", newSeries.getEndTime().toString());
+    assertEquals("MWF", newSeries.getRecurrenceDays());
+    assertEquals(5, newSeries.getOccurrenceCount());
+    assertEquals("2025-09-23", newSeries.getUntilDate().toString());
   }
 
 
@@ -220,18 +298,14 @@ public class CalendarModelTest {
 
   @Test
   public void testStatus_isBusy() {
-    Event event1 = model.createEvent("create event on 2026-01-01");
-    System.out.println(model.getHashMap().get(LocalDateTime.of(event1.getStartDate(),
-            event1.getStartTime())));
-    String actual = model.showStatus("show status on 2026-01-01T03:33");
+    Event event1 = model.createEvent("create event Happy on 2026-02-03");
+    String actual = model.showStatus("show status on 2026-02-03T15:33");
     assertEquals("Busy", actual);
   }
 
   @Test
   public void testStatus_isNotBusy() {
-    Event event1 = model.createEvent("create event on 2025-03-23");
-    System.out.println(model.getHashMap().get(LocalDateTime.of(event1.getStartDate(),
-            event1.getStartTime())));
+    Event event1 = model.createEvent("create event Lala on 2025-03-23");
     String actual = model.showStatus("show status on 2025-03-23T18:00");
     assertEquals("Not Busy", actual);
   }
@@ -286,6 +360,5 @@ public class CalendarModelTest {
   // test EventBuilder startTime(LocalTime s)
 
   // test EventBuilder startDate(LocalDate s)
-
 
 }

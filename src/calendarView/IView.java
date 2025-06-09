@@ -1,4 +1,4 @@
-package calendarView;
+package calendarview;
 
 import java.util.List;
 
@@ -8,16 +8,21 @@ import java.util.List;
 public interface IView {
 
   /**
+   * Prints a list of valid commands.
+   */
+  void printOptions();
+
+  /**
    * Shows the status of the user on the given day/time.
    *
-   * @param status
+   * @param status the status to be shown
    */
   void showStatus(String status);
 
   /**
    * Prints all events in a given day/within an interval.
    *
-   * @param events
+   * @param events the list of events to print
    */
   void printEvents(List<String> events);
 

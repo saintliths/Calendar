@@ -1,4 +1,4 @@
-package calendarModel;
+package calendarmodel;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -26,8 +26,8 @@ public class Event {
    * @param endDate     the end date of the event
    * @param endTime     the time the event ends
    * @param description description of the event
-   * @param location    location of the event
-   * @param isPrivate   whether is it private or public
+   * @param location location of the event
+   * @param isPrivate whether is it private or public
    */
   public Event(String subject, LocalDate startDate, LocalTime startTime, LocalDate endDate,
                LocalTime endTime, String description, String location, boolean isPrivate) {
@@ -42,8 +42,7 @@ public class Event {
   }
 
   /**
-   * This class represents an inner builder class that builds some of the fields
-   * of this event.
+   * This class represents an inner builder class that builds some of the fields of this event.
    */
   static class EventBuilder {
     private String subject;
@@ -58,7 +57,7 @@ public class Event {
     /**
      * Constructs an EventBuilder object.
      *
-     * @param subject   the subject of the event
+     * @param subject the subject of the event
      * @param startDate the start date of the event
      * @param startTime the start time of the event
      */
@@ -215,11 +214,11 @@ public class Event {
     return description;
   }
 
+
   /**
    * Gets the corresponding location of an event.
    * @return String
    */
-
   public String getLocation() {
     return location;
   }
