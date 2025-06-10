@@ -123,64 +123,15 @@ public class CalendarModel implements IModel {
 
   }
 
-
-  @Override
-  public EventSeries createEventSeries(String input) {
-    String[] arg = input.split(" ");
-    String[] start = arg[4].split("T");
-    LocalDate startDate = LocalDate.parse(start[0]);
-    LocalTime startTime = LocalTime.parse(start[1]);
-    String recurringDays = arg[6];
-    int occurrenceCount;
-
-    EventSeriesBuilder e = new EventSeriesBuilder(arg[2], startDate, startTime)
-            .recurrenceDays(recurringDays);
-
-    if (input.contains("to")) {
-      String[] end = arg[6].split("T");
-      LocalDate endDate = LocalDate.parse(end[0]);
-      LocalTime endTime = LocalTime.parse(end[1]);
-      recurringDays = arg[8];
-      e.endDate(endDate).endTime(endTime).recurrenceDays(recurringDays);
-    }
-
-    if (input.contains("for")) {
-      occurrenceCount = Integer.parseInt(arg[10]);
-      e.occurrenceCount(occurrenceCount);
-    }
-
-    // if startDate (key) already exists then add to the existing list  in value
-    if (eventSeriesByDate.containsKey(LocalDateTime.of(startDate, startTime))) {
-      eventSeriesByDate.get(LocalDateTime.of(startDate, startTime)).add(e.build());
-    } else {
-      // if startDate does not exist as a list it will create one and add to that list
-      eventSeriesByDate.put(LocalDateTime.of(startDate, startTime),
-              new ArrayList<>());
-      eventSeriesByDate.get(LocalDateTime.of(startDate, startTime)).add(e.build());
-    }
-
-    return e.build();
-  }
-
-  @Override
-  public EventSeries editEventSeries(String input) {
-
-    //    EventSeries e = model.createEventSeries("create event Yabba from " +
-    //            "2025-09-23T04:56 to 2025-09-23T09:33 " +
-    //            "repeats MWF for 5 times");
-    //
-    // edit events <property> <eventSubject> from <dateStringTtimeString> with <NewPropertyValue>
-
-    // parse the event input
-    String[] arg = input.split(" ");
-    String property = arg[2];
-    String[] start = arg[5].split("T");
-    LocalDate startDate = LocalDate.parse(start[0]);
-    LocalTime startTime = LocalTime.parse(start[1]);
-    String eventSubject = arg[3];
-
-    // contains the unchanges event series list  first value
-    EventSeries es = eventSeriesByDate.get(LocalDateTime.of(startDate, startTime)).get(0);
+  /**
+   * Sets the event series' fields to be the old fields if it is not the property being changed.
+   * @param es the current EventSeries
+   * @param e the builder building the new EventSeries
+   * @param property the property being changed
+   * @return a new edited EventSeries
+   */
+  private EventSeries eventSeriesOldFieldsHelper(EventSeries es,
+                                        EventSeriesBuilder e, String property) {
     String oldSubject = es.getSubject();
     LocalDate oldStartDate = es.getStartDate();
     LocalTime oldStartTime = es.getStartTime();
@@ -192,15 +143,8 @@ public class CalendarModel implements IModel {
     Boolean oldStatus = es.isPrivate();
     int oldOccurrence = es.getOccurrenceCount();
 
-    // new value is always the last thing in the input
-    String newValue = arg[arg.length - 1];
-
-    // new builder to avoid mutations
-    EventSeriesBuilder e = new EventSeriesBuilder(eventSubject, startDate, startTime);
-
     switch (property) {
       case "subject":
-        e.subject(newValue);
         e.startDate(oldStartDate);
         e.startTime(oldStartTime);
         e.endDate(oldEndDate);
@@ -212,12 +156,7 @@ public class CalendarModel implements IModel {
         e.occurrenceCount(oldOccurrence);
         break;
       case "start":
-        String[] newStartProperty = newValue.split("T");
-        String newStartDate = newStartProperty[0];
-        String newStartTime = newStartProperty[1];
         e.subject(oldSubject);
-        e.startDate(LocalDate.parse(newStartDate));
-        e.startTime(LocalTime.parse(newStartTime));
         e.endDate(oldEndDate);
         e.endTime(oldEndTime);
         e.description(oldDescription);
@@ -227,14 +166,9 @@ public class CalendarModel implements IModel {
         e.occurrenceCount(oldOccurrence);
         break;
       case "end":
-        String[] newEndProperty = newValue.split("T");
-        String newEndDate = newEndProperty[0];
-        String newEndTime = newEndProperty[1];
         e.subject(oldSubject);
         e.startDate(oldStartDate);
         e.startTime(oldStartTime);
-        e.endDate(LocalDate.parse(newEndDate));
-        e.endTime(LocalTime.parse(newEndTime));
         e.description(oldDescription);
         e.location(oldLocation);
         e.isPrivate(oldStatus);
@@ -247,14 +181,12 @@ public class CalendarModel implements IModel {
         e.startTime(oldStartTime);
         e.endDate(oldEndDate);
         e.endTime(oldEndTime);
-        e.description(newValue);
         e.location(oldLocation);
         e.isPrivate(oldStatus);
         e.recurrenceDays(oldRecurrence);
         e.occurrenceCount(oldOccurrence);
         break;
       case "location":
-        e.location(newValue);
         e.subject(oldSubject);
         e.startDate(oldStartDate);
         e.startTime(oldStartTime);
@@ -275,11 +207,11 @@ public class CalendarModel implements IModel {
         e.description(oldDescription);
         e.recurrenceDays(oldRecurrence);
         e.isPrivate(Boolean.parseBoolean(newValue));
+        eventSeriesOldFieldsHelper(es, e, property);
         break;
       default:
         throw new IllegalArgumentException("No such property");
     }
-
     return e.build();
 
   }
@@ -297,16 +229,8 @@ public class CalendarModel implements IModel {
     String newValue = arg[arg.length - 1];
     LocalDateTime key = LocalDateTime.of(startDate, startTime);
 
-    // we know it is a date and time if it contains T
-    if (newValue.contains("T")) {
-      String[] newProperty = newValue.split("T");
-      String newDate = newProperty[0];
-      String newTime = newProperty[1];
-    }
-
-    // holds the series that the input is referrring to
+    // holds the series that the input is refferring to
     EventSeries currentSeries = null;
-
     // look for series
     if (eventSeriesByDate.containsKey(key)) {
       // for events with this startDate
@@ -378,6 +302,8 @@ public class CalendarModel implements IModel {
 
     return e.build();
   }
+
+
 
   @Override
   public Event editEvent(String input) {

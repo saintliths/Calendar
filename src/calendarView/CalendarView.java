@@ -61,7 +61,8 @@ public class CalendarView implements IView {
 
   @Override
   public void showStatus(String status) {
-    out.println(status);
+
+    out.println(status + System.lineSeparator()) ;
   }
 
   @Override
