@@ -40,7 +40,7 @@ public class CalendarControllerTest {
     IView view = new CalendarView(pStream);
     IModel model = new CalendarModel(new HashMap<>(),
             new HashMap<>());
-    ZoneId est = ZoneId.of("EST");
+    ZoneId est = ZoneId.of("America/New_York");
     IModel2 model2 = new MultipleCalendar("Basic", est, model);
 
     model.createEvent("create event Birthday on 2025-03-23");

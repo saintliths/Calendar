@@ -206,6 +206,103 @@ public class CalendarModel implements IModel {
         e.location(oldLocation);
         e.description(oldDescription);
         e.recurrenceDays(oldRecurrence);
+        break;
+      default:
+        throw new IllegalArgumentException("No such property");
+    }
+
+    return e.build();
+
+  }
+
+  @Override
+  public EventSeries createEventSeries(String input) {
+    String[] arg = input.split(" ");
+    String[] start = arg[4].split("T");
+    LocalDate startDate = LocalDate.parse(start[0]);
+    LocalTime startTime = LocalTime.parse(start[1]);
+    String recurringDays = arg[6];
+    int occurrenceCount;
+
+    EventSeriesBuilder e = new EventSeriesBuilder(arg[2], startDate, startTime)
+            .recurrenceDays(recurringDays);
+
+    if (input.contains("to")) {
+      String[] end = arg[6].split("T");
+      LocalDate endDate = LocalDate.parse(end[0]);
+      LocalTime endTime = LocalTime.parse(end[1]);
+      recurringDays = arg[8];
+      e.endDate(endDate).endTime(endTime).recurrenceDays(recurringDays);
+    }
+
+    if (input.contains("for")) {
+      occurrenceCount = Integer.parseInt(arg[10]);
+      e.occurrenceCount(occurrenceCount);
+    }
+
+    // if startDate (key) already exists then add to the existing list  in value
+    if (eventSeriesByDate.containsKey(LocalDateTime.of(startDate, startTime))) {
+      eventSeriesByDate.get(LocalDateTime.of(startDate, startTime)).add(e.build());
+    } else {
+      // if startDate does not exist as a list it will create one and add to that list
+      eventSeriesByDate.put(LocalDateTime.of(startDate, startTime),
+              new ArrayList<>());
+      eventSeriesByDate.get(LocalDateTime.of(startDate, startTime)).add(e.build());
+    }
+
+    return e.build();
+  }
+
+  @Override
+  public EventSeries editEventSeries(String input) {
+
+    // parse the event input
+    String[] arg = input.split(" ");
+    String property = arg[2];
+    String[] start = arg[5].split("T");
+    LocalDate startDate = LocalDate.parse(start[0]);
+    LocalTime startTime = LocalTime.parse(start[1]);
+    String eventSubject = arg[3];
+    // new value is always the last thing in the input
+    String newValue = arg[arg.length - 1];
+
+    // contains the unchanges event series list  first value
+    EventSeries es = eventSeriesByDate.get(LocalDateTime.of(startDate, startTime)).get(0);
+
+
+    // new builder to avoid mutations
+    EventSeriesBuilder e = new EventSeriesBuilder(eventSubject, startDate, startTime);
+
+    switch (property) {
+      case "subject":
+        e.subject(newValue);
+        eventSeriesOldFieldsHelper(es, e, property);
+        break;
+      case "start":
+        String[] newStartProperty = newValue.split("T");
+        String newStartDate = newStartProperty[0];
+        String newStartTime = newStartProperty[1];
+        e.startDate(LocalDate.parse(newStartDate));
+        e.startTime(LocalTime.parse(newStartTime));
+        eventSeriesOldFieldsHelper(es, e, property);
+        break;
+      case "end":
+        String[] newEndProperty = newValue.split("T");
+        String newEndDate = newEndProperty[0];
+        String newEndTime = newEndProperty[1];
+        e.endDate(LocalDate.parse(newEndDate));
+        e.endTime(LocalTime.parse(newEndTime));
+        eventSeriesOldFieldsHelper(es, e, property);
+        break;
+      case "description":
+        e.description(newValue);
+        eventSeriesOldFieldsHelper(es, e, property);
+        break;
+      case "location":
+        e.location(newValue);
+        eventSeriesOldFieldsHelper(es, e, property);
+        break;
+      case "status":
         e.isPrivate(Boolean.parseBoolean(newValue));
         eventSeriesOldFieldsHelper(es, e, property);
         break;
@@ -247,7 +344,6 @@ public class CalendarModel implements IModel {
     } else {
       throw new IllegalArgumentException("No event series with start date and subject .");
     }
-
 
     // avoid mutations by creating a new event series
     EventSeriesBuilder e = new EventSeriesBuilder(eventSeriesSubject, startDate, startTime);
