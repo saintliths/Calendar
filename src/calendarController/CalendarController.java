@@ -2,16 +2,16 @@ package calendarcontroller;
 
 import java.util.Scanner;
 
-import calendarmodel.IModel;
 import calendarmodel.IModel2;
 import calendarview.IView;
+import calendarview.IView2;
 
 /**
  * This class represents the controller implementation for a calendar.
  */
 public class CalendarController implements IController {
   private final Readable in;
-  private final IView view;
+  private final IView2 view;
   private final IModel2 model;
 
   /**
@@ -21,7 +21,7 @@ public class CalendarController implements IController {
    * @param in    the user input
    * @param view  the view that is passed into this controller
    */
-  public CalendarController(IModel2 model, Readable in, IView view) {
+  public CalendarController(IModel2 model, Readable in, IView2 view) {
     this.model = model;
     this.view = view;
     this.in = in;
@@ -34,16 +34,13 @@ public class CalendarController implements IController {
     view.printOptions();
 
     Scanner input = new Scanner(in);
-    String in = input.nextLine();
-
-    // create event <eventSubject> from <dateStringTtimeString> to <dateStringTtimeString>
 
     if (in.equals("exit")) {
       quit = true;
     }
 
-    while (!quit) {
-
+    while (!quit && input.hasNextLine()) {
+      String in = input.nextLine();
       if (in.startsWith("create event")) {
         if (in.contains("repeats")) {
           model.createEventSeries(in);
@@ -86,6 +83,7 @@ public class CalendarController implements IController {
 
       } else {
         view.showOptionError();
+        break;
       }
 
     }

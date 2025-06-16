@@ -1,29 +1,17 @@
-
-create event OOD from 2025-03-23T12:00 to 2025-04-04T03:00
-
-create event fun from 2005-03-23T12:00 to 2025-11-04T17:00 repeats MTW for 4 times
-
-create event run from 2025-03-23T12:00 to 2025-04-04T03:00 repeats FSS until 2050-04-04T03:00
-
-create event gym on 2100-04-04T03:00
-
-create event dinner on 2006-04-07T03:00 repeats M for 6 times
-
-create event breakfast on 2045-04-04T03:00 repeats TR until 2050-04-04T03:00
-
-
-edit event location breakfast from 2005-03-23T12:00 to 2005-03-23T22:00 with nero
-
-
-edit events subject lunch from 2005-03-23T22:00 with dinner
-
-
-edit series end run from 2005-03-23T22:00 with 2005-03-23T23:00
-
-
-print events on 2025-05-23T12:00
-
-print events from 2025-05-23T12:00 to 2025-08-23T12:00
-
-show status on 2025-12-20T10:00
-
+create calendar --name Vanessa --timezone America/New_York
+edit calendar --name Vanessa --property name Jennifer
+edit calendar --name Jennifer --property timezone Asia/Ho_Chi_Minh
+create event breakfast from 2025-07-07T07:00 to 2025-07-07T09:00
+create event dinner from 2025-07-07T18:00 to 2025-07-07T19:00
+create event OOD from 2025-05-12T09:00 to 2025-06-12T11:00 repeats MTWR
+create event gym on 2025-04-04
+create event hangout on 2045-04-04T03:00 repeats TR until 2050-04-04T03:00
+edit event location breakfast from 2025-07-07T07:00 to 2025-07-07T09:00 with nero
+edit series end OOD from 2025-05-12T09:00 with 2025-06-12T12:00
+print events on 2025-07-07
+print events from 2025-04-04T03:00 to 2025-07-07T19:00
+show status on 2025-06-09T10:00
+create calendar --name Melanie --timezone Asia/Tokyo
+copy event OOD on 2025-05-12T09:00 --target Melanie to 2025-05-12T22:00
+copy events on 2025-07-07 --target Melanie to 2025-07-09
+copy events between 2025-05-12 and 2045-04-04 --target Melanie to 2025-05-12

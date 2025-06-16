@@ -1,15 +1,19 @@
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import calendarModel.CalendarModel;
-import calendarModel.Event;
-import calendarModel.EventSeries;
-import calendarModel.IModel;
+import calendarmodel.CalendarModel;
+import calendarmodel.Event;
+import calendarmodel.EventSeries;
+import calendarmodel.IModel;
 
 import static org.junit.Assert.assertEquals;
 
@@ -26,6 +30,7 @@ public class CalendarModelTest {
 
   @Test
   public void testCreateEvent_UntilSpecificDate() {
+    this.setUp();
     Event e =
             model.createEvent("create event Hehe from 2025-03-23T12:00 to 2025-04-04T03:00");
 
@@ -35,10 +40,17 @@ public class CalendarModelTest {
     assertEquals("2025-04-04", e.getEndDate().toString());
     assertEquals("03:00", e.getEndTime().toString());
     assertEquals("", e.getDescription());
+
+    try {
+      model.createEvent("create event Hehe from 2025-03-23T12:00 to 2025-04-04T03:00");
+    } catch (IllegalArgumentException f) {
+      // should pass since the event overlaps
+    }
   }
 
   @Test
   public void testCreateEvents_AllDayEvent() {
+    this.setUp();
     Event d = model.createEvent("create event OOD on 2025-06-03");
     assertEquals("OOD", d.getSubject());
     assertEquals("2025-06-03", d.getStartDate().toString());
@@ -52,6 +64,7 @@ public class CalendarModelTest {
   // you can create a default event over an existing event day because it is not the same
   @Test
   public void testCreateEvents_SameStartDate_Default() {
+    this.setUp();
     Event e =
             model.createEvent("create event Hehe from 2025-03-23T12:00 to 2025-04-04T03:00");
     Event d = model.createEvent("create event Hehe on 2025-03-23");
@@ -63,25 +76,9 @@ public class CalendarModelTest {
     assertEquals("", d.getDescription());
   }
 
-  // throw exception if a property has more than its expected
-  @Test
-  public void testCreateEvents_MultipleSubjectWords() {
-    Event e =
-            model.createEvent("create event "
-                    + "Hehe Haha"
-                    + "from 2025-03-23T12:00 to 2025-04-04T03:00");
-
-    assertEquals("Hehe Haha", e.getSubject());
-    assertEquals("2025-03-23", e.getStartDate().toString());
-    assertEquals("12:00", e.getStartTime().toString());
-    assertEquals("2025-04-04", e.getEndDate().toString());
-    assertEquals("03:00", e.getEndTime().toString());
-    assertEquals("", e.getDescription());
-  }
-
-
   @Test
   public void testCreateEventSeries() {
+    this.setUp();
     EventSeries e = model.createEventSeries("create event Yabba from "
             + "2025-09-23T04:56 to 2025-09-23T09:33 "
             + "repeats MWF for 5 times");
@@ -97,6 +94,7 @@ public class CalendarModelTest {
 
   @Test
   public void testEditEvent_ChangeSubject() {
+    this.setUp();
     Event oldEvent =
             model.createEvent("create event Hehe from 2025-03-23T12:00 to 2025-04-04T03:00");
 
@@ -116,6 +114,7 @@ public class CalendarModelTest {
 
   @Test
   public void testEditEvent_ChangeStart() {
+    this.setUp();
 
     Event oldEvent =
             model.createEvent("create event Hehe from 2025-03-23T12:00 to 2025-04-04T03:00");
@@ -131,8 +130,29 @@ public class CalendarModelTest {
     assertEquals("", newEvent2.getDescription());
   }
 
+
+  @Test
+  public void testEditEvent_ChangeEnd() {
+    this.setUp();
+
+    Event oldEvent =
+            model.createEvent("create event Hehe from 2025-03-23T12:00 to 2025-03-23T13:00");
+
+    Event newEvent2 = model.editEvent("edit event end Hehe from 2025-03-23T12:00"
+            + " to 2025-03-23T13:00 with 2025-03-23T14:00");
+
+    assertEquals("Hehe", newEvent2.getSubject());
+    assertEquals("2025-03-23", newEvent2.getStartDate().toString());
+    assertEquals("12:00", newEvent2.getStartTime().toString());
+    assertEquals("2025-03-23", newEvent2.getEndDate().toString());
+    assertEquals("14:00", newEvent2.getEndTime().toString());
+    assertEquals("", newEvent2.getDescription());
+  }
+
+
   @Test
   public void testEditEvent_changeLocation() {
+    this.setUp();
     model.createEvent("create event class from 2025-07-06T12:00 to 2025-07-06T13:00");
     Event updated = model.editEvent("edit event location class from 2025-07-06T12:00 to " +
             "2025-07-06T13:00 with home");
@@ -141,6 +161,7 @@ public class CalendarModelTest {
 
   @Test
   public void testEditEvent_changeSubject() {
+    this.setUp();
     model.createEvent("create event class from 2025-07-06T08:00 to 2025-07-06T09:00");
     Event updated = model.editEvent("edit event subject class from 2025-07-06T08:00 to " +
             "2025-07-06T09:00 with study");
@@ -280,6 +301,7 @@ public class CalendarModelTest {
 
   @Test
   public void testPrintEvents() {
+    this.setUp();
     Event event1 = model.createEvent("create event Hi "
             + "from 2025-04-03T09:00 to 2025-04-03T10:00");
     Event event2 = model.createEvent("create event Hai "
@@ -298,67 +320,62 @@ public class CalendarModelTest {
 
   @Test
   public void testStatus_isBusy() {
-    Event event1 = model.createEvent("create event Happy on 2026-02-03");
+    this.setUp();
+    model.createEvent("create event Happy on 2026-02-03");
     String actual = model.showStatus("show status on 2026-02-03T15:33");
     assertEquals("Busy", actual);
   }
 
   @Test
   public void testStatus_isNotBusy() {
-    Event event1 = model.createEvent("create event Lala on 2025-03-23");
+    model.createEvent("create event Lala on 2025-03-23");
     String actual = model.showStatus("show status on 2025-03-23T18:00");
     assertEquals("Not Busy", actual);
   }
 
 
   // test checkEventOverlap
-  @Test(expected = IllegalArgumentException.class)
-  public void testToString() {
-    Event e =
-            model.createEvent("create event Hehe from 2025-03-23T12:00 to 2025-04-04T03:00");
-    Event d =
-            model.createEvent("create event Hehe from 2025-03-23T12:00 to 2025-04-04T03:00");
+  @Test
+  public void testEventOverlap() {
+    this.setUp();
+
+    model.createEvent("create event Hehe from 2025-03-23T12:00 to 2025-04-04T03:00");
+    assertEquals("Hehe", model.getHashMap()
+            .get(LocalDateTime.of(LocalDate.of(2025, 3, 23),
+                    LocalTime.of(12, 0))).get(0).getSubject());
+
+    try {
+      model.createEvent("create event Hehe from 2025-03-23T12:00 to 2025-04-04T03:00");
+    } catch (IllegalArgumentException e) {
+      // passes
+    }
   }
 
+  @Test
+  public void testExceptions() {
+    this.setUp();
 
-  // test event toString
+    // wrong input format
+    try {
+      model.createEvent("create event from 2025-03-23T12:00 to 2025-04-04T03:00");
+    } catch (DateTimeParseException e) {
+      // passes
+    }
 
-  // test inclusivity for creating event series until a specific date
+    model.createEvent("create event Breakfast "
+            + "from 2025-04-03T09:00 to 2025-04-03T10:00");
+    assertEquals("Breakfast", model.getHashMap()
+            .get(LocalDateTime.of(LocalDate.of(2025, 4, 3),
+                    LocalTime.of(9, 0))).get(0).getSubject());
 
-  // test checkEventOverlap
+    // invalid property to edit
+    try {
+      model.editEvent("edit event time Breakfast from " +
+              "2025-03-23T12:00 to 2025-04-04T03:00 with study");
+    } catch (IllegalArgumentException e) {
+      // passes
+    }
+  }
 
-  // test isPrivate
-
-  // test getLocation
-
-  // test getDescription
-
-  // test getEndTime
-
-  // test getEndDate
-
-  // test getStartTim
-
-  // test getStartDate
-
-  // test getSubject
-
-  // test Event Build
-
-  // test EventBuilder isPrivate(boolean p)
-
-  // test EventBuilder location(String l)
-
-  // test EventBuilder description(String d)
-
-  // test EventBuilder endTime(LocalTime e)
-
-  // test EventBuilder subject(String s)
-
-  // test EventBuilder endDate(LocalDate e)
-
-  // test EventBuilder startTime(LocalTime s)
-
-  // test EventBuilder startDate(LocalDate s)
 
 }

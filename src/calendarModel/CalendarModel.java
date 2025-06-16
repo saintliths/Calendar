@@ -105,7 +105,7 @@ public class CalendarModel implements IModel {
 
     Event addedEvent = e.build();
 
-    // check before adding to has
+    // check before adding to hash
     if (checkEventOverlap(addedEvent)) {
       throw new IllegalArgumentException("Event already exists.");
     }
@@ -124,14 +124,16 @@ public class CalendarModel implements IModel {
   }
 
   /**
-   * Sets the event series' fields to be the old fields if it is not the property being changed.
-   * @param es the current EventSeries
-   * @param e the builder building the new EventSeries
+   * Helper that sets the event series' fields to be the old fields if it is
+   * not the property being changed.
+   *
+   * @param es       the current EventSeries
+   * @param e        the builder building the new EventSeries
    * @param property the property being changed
    * @return a new edited EventSeries
    */
   private EventSeries eventSeriesOldFieldsHelper(EventSeries es,
-                                        EventSeriesBuilder e, String property) {
+                                                 EventSeriesBuilder e, String property) {
     String oldSubject = es.getSubject();
     LocalDate oldStartDate = es.getStartDate();
     LocalTime oldStartTime = es.getStartTime();
@@ -239,6 +241,7 @@ public class CalendarModel implements IModel {
       occurrenceCount = Integer.parseInt(arg[10]);
       e.occurrenceCount(occurrenceCount);
     }
+
 
     // if startDate (key) already exists then add to the existing list  in value
     if (eventSeriesByDate.containsKey(LocalDateTime.of(startDate, startTime))) {
@@ -398,7 +401,6 @@ public class CalendarModel implements IModel {
 
     return e.build();
   }
-
 
 
   @Override

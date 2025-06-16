@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,7 +50,6 @@ public class MultipleCalendar implements IModel2 {
       throw new IllegalArgumentException("Calendar already exists");
     }
     return calendar;
-    // return a new multipleCalender (name, timezone)
   }
 
   @Override
@@ -60,6 +60,7 @@ public class MultipleCalendar implements IModel2 {
     String newValue = arg[arg.length - 1];
 
     IModel2 calendar;
+
     if (calendars.containsKey(name)) {
       calendar = calendars.get(name);
     } else {
@@ -81,13 +82,19 @@ public class MultipleCalendar implements IModel2 {
         cb.timeZone(ZoneId.of(newValue));
         cb.name(oldName);
         cal = cb.build();
+
+        Map<LocalDateTime, List<Event>> e =
+                cal.getCalendars().get(oldName).getModel().getHashMap();
+
+        // convert the time of the events after changing the time zone
+        for (Map.Entry<LocalDateTime, List<Event>> entry : e.entrySet()) {
+          convertTimeZone(entry.getKey(), cal);
+        }
         break;
       default:
         throw new IllegalArgumentException("Invalid property");
     }
     return cal;
-    // return a new multipleCalender (name, timezone)
-
   }
 
   @Override
@@ -110,19 +117,16 @@ public class MultipleCalendar implements IModel2 {
   }
 
   @Override
-  public IModel2 copySpecificEvent(String input) {
-    // input "copy event Hehe on 2025-03-23T12:00 --target Lola to 2025-04-23T12:00"
+  public void copySpecificEvent(String input) {
     String[] arg = input.split(" ");
     String targetName = arg[6];
     String eventName = arg[2];
-    LocalDateTime dateOld = LocalDateTime.parse(arg[4]);
-    LocalDateTime dateNew = LocalDateTime.parse(arg[8]);
-
-
-    // find event Hehe on 2025-03-23T12:00 from the events hashmap of the current calendar
-    // check if that already exists in Lola
-    // if not then find key date in Lola calender hashmap of events and add it to the corresponding value which is
-    // the list of events on that date
+    String[] orig = arg[4].split("T");
+    String[] newDate = arg[8].split("T");
+    LocalDateTime dateOld = LocalDateTime.of(LocalDate.parse(orig[0]),
+            LocalTime.parse(orig[1]));
+    LocalDateTime dateNew = LocalDateTime.of(LocalDate.parse(newDate[0]),
+            LocalTime.parse(newDate[1]));
 
     IModel2 target;
 
@@ -137,35 +141,32 @@ public class MultipleCalendar implements IModel2 {
     List<Event> findEvents = this.model.getHashMap().get(dateOld);
     Event matchingEvents;
     if (findEvents == null) {
-      throw new IllegalArgumentException("Cannot find event.");
+      throw new IllegalArgumentException("Cannot find event");
     } else {
       // find the events from that date with the same name
       matchingEvents = null;
       for (Event event : findEvents) {
         if (event.getSubject().equals(eventName)) {
           matchingEvents = event;
-
           break;
         }
       }
     }
 
-    // put the matching events into the target calendar
     // hashmap of the target
     Map<LocalDateTime, List<Event>> targetHash = target.getModel().getHashMap();
 
-    targetHash.get(dateOld).add(matchingEvents);
-
-
-    return null;
-
+    targetHash.put(dateNew, new ArrayList<>());
+    // put the matching events into the target calendar
+    targetHash.get(dateNew).add(matchingEvents);
   }
 
   @Override
-  public IModel2 copyMultipleEvents(String input) {
+  public void copyMultipleEvents(String input) {
     String[] arg = input.split(" ");
-    String date = arg[3];
+    LocalDate date = LocalDate.parse(arg[3]);
     String targetName = arg[5];
+    LocalDate targetDate = LocalDate.parse(arg[7]);
     List<Event> eventsToCopy = new ArrayList<>();
 
     IModel2 target;
@@ -178,16 +179,109 @@ public class MultipleCalendar implements IModel2 {
 
     Map<LocalDateTime, List<Event>> thisHash = this.getModel().getHashMap();
 
-    List<Event> events = thisHash.get(date);
+    for (Map.Entry<LocalDateTime, List<Event>> entry : thisHash.entrySet()) {
+      if (entry.getKey().toLocalDate().equals(date)) {
+        eventsToCopy.addAll(entry.getValue());
+      }
+    }
+
+    // no events between the start and end date
+    if (eventsToCopy.isEmpty()) {
+      throw new IllegalArgumentException("No events found on this date");
+    }
 
     Map<LocalDateTime, List<Event>> targetHash = target.getModel().getHashMap();
 
-    return null;
+    for (Event event : eventsToCopy) {
+      LocalDateTime dateTime =
+              LocalDateTime.of(targetDate, event.getStartTime());
+
+      LocalDateTime converted = convertTimeZone(dateTime, target);
+
+      if (targetHash.containsKey(converted)) {
+        targetHash.get(converted).add(event);
+      } else {
+        targetHash.put(converted, new ArrayList<>());
+        targetHash.get(converted).add(event);
+      }
+    }
   }
 
+
   @Override
-  public IModel2 copyEventsBetween(String input) {
-    return null;
+  public void copyEventsBetween(String input) {
+    // copy events between <dateString> and <dateString> --target <calendarName> to <dateString>
+    String[] arg = input.split(" ");
+    LocalDate dateStart = LocalDate.parse(arg[3]); // <dateString>
+    LocalDate dateEnd = LocalDate.parse(arg[5]); // <dateString>
+    String targetName = arg[7]; // <calendarName>
+    LocalDate targetDate = LocalDate.parse(arg[9]); // <dateString>
+
+    IModel2 target;
+
+    // check if target calendar even exists
+    if (calendars.containsKey(targetName)) {
+      target = calendars.get(targetName);
+    } else {
+      throw new IllegalArgumentException("Calendar does not exist");
+    }
+
+    // get the current calendars hash map
+    Map<LocalDateTime, List<Event>> thisHash = this.getModel().getHashMap();
+    List<Event> eventsBetween = new ArrayList<>();
+
+    // find all events between the dateStart and dateEnd
+    for (Map.Entry<LocalDateTime, List<Event>> entry : thisHash.entrySet()) {
+      // check for in between
+      if ((entry.getKey().toLocalDate().isAfter(dateStart)
+              || entry.getKey().toLocalDate().isEqual(dateStart))
+              && (entry.getKey().toLocalDate().isBefore(dateEnd)
+              || entry.getKey().toLocalDate().isEqual(dateEnd))) {
+        // now we have a list of all the events to be added
+        eventsBetween.addAll(thisHash.get(entry.getKey()));
+      }
+    }
+
+    // no events between the start and end date
+    if (eventsBetween.isEmpty()) {
+      throw new IllegalArgumentException("No events found between these dates");
+    }
+
+    // the calendar of the target calendar
+    Map<LocalDateTime, List<Event>> targetHash = target.getModel().getHashMap();
+    // put the eventsBetween list into the targetDate
+    for (Event event : eventsBetween) {
+      LocalDateTime dateTime =
+              LocalDateTime.of(targetDate, event.getStartTime());
+
+      LocalDateTime converted = convertTimeZone(dateTime, target);
+
+      if (targetHash.containsKey(converted)) {
+        targetHash.get(converted).add(event);
+      } else {
+        targetHash.put(converted, new ArrayList<>());
+        targetHash.get(converted).add(event);
+      }
+    }
+  }
+
+
+  // convert date time helper
+  //  localDateTime is the copied events localDateTime
+  @Override
+  public LocalDateTime convertTimeZone(LocalDateTime localDateTime, IModel2 t) {
+    // get the timeZone of target calendar
+    ZoneId tZone = t.getTimeZone();
+
+    // get the zone of the current events date time
+    ZonedDateTime currentZonedDateTime = localDateTime.atZone(this.timeZone);
+    // convert from the current date time to the target calendars date time
+    ZonedDateTime tZonedDateTime = currentZonedDateTime.withZoneSameInstant(tZone);
+
+    // toLocalDateTime extracts date and time from zone
+    return tZonedDateTime.toLocalDateTime();
+
+    // check if that exists in the target calendar and if it does throw exception
   }
 
   @Override

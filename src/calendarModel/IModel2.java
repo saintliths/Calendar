@@ -1,12 +1,14 @@
 package calendarmodel;
 
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Map;
 
 import calendarmodel.MultipleCalendar.CalendarBuilder;
 
 /**
- * This interface extends the old IModel interface with a couple of new functions.
+ * This interface extends the old IModel interface with a couple of new functions, including
+ * creating new calendars, editing calendars, and copying events.
  */
 public interface IModel2 extends IModel {
 
@@ -43,24 +45,21 @@ public interface IModel2 extends IModel {
   IModel2 useCalendar(String input);
 
   /**
-   * Used to copy a singular specific event from one calender to another.
+   * Used to copy a singular specific event from one calendar to another.
    *
    * @param input the user input
-   * @return an IModel2
    */
-  IModel2 copySpecificEvent(String input);
+  void copySpecificEvent(String input);
 
   /**
    * @param input the user input
-   * @return an IModel2
    */
-  IModel2 copyMultipleEvents(String input);
+  void copyMultipleEvents(String input);
 
   /**
    * @param input the user input
-   * @return an IModel2
    */
-  IModel2 copyEventsBetween(String input);
+  void copyEventsBetween(String input);
 
   /**
    * Get the name of the calendar.
