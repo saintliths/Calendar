@@ -40,7 +40,6 @@ public class CalendarProgram {
       Readable in = new InputStreamReader(System.in);
       IController controller = new CalendarController(model2, in, view);
       controller.control();
-
     }
 
   }
