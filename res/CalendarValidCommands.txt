@@ -1,6 +1,4 @@
 create calendar --name Vanessa --timezone America/New_York
-edit calendar --name Vanessa --property name Jennifer
-edit calendar --name Jennifer --property timezone Asia/Ho_Chi_Minh
 create event breakfast from 2025-07-07T07:00 to 2025-07-07T09:00
 create event dinner from 2025-07-07T18:00 to 2025-07-07T19:00
 create event OOD from 2025-05-12T09:00 to 2025-06-12T11:00 repeats MTWR
