@@ -29,16 +29,22 @@ public class CalendarProgram {
     IModel model = new CalendarModel(new HashMap<>(), new HashMap<>());
     ZoneId est = ZoneId.of("America/New_York");
     IModel2 model2 = new MultipleCalendar("Basic", est, model);
-    IView2 view = new NewCalendarView(new CalendarView(System.out));
 
     if (args.length > 0 && args[1].equals("headless")) {
       FileReader file = new FileReader(args[2]);
-      IController controller = new CalendarController(model2, file, view);
+      IView view1 = new CalendarView(System.out);
+      IController controller = new CalendarController(model2, file, view1);
       controller.control();
 
     } else if (args.length > 0 && args[1].equals("interactive")) {
       Readable in = new InputStreamReader(System.in);
-      IController controller = new CalendarController(model2, in, view);
+      IView view1 = new CalendarView(System.out);
+      IController controller = new CalendarController(model2, in, view1);
+      controller.control();
+    } else {
+      Readable in = new InputStreamReader(System.in);
+      IView2 view2 = new NewCalendarView(System.out);
+      IController controller = new CalendarController(model2, in, view2);
       controller.control();
     }
 

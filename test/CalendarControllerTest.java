@@ -41,7 +41,7 @@ public class CalendarControllerTest {
     OutputStream outStream = new ByteArrayOutputStream();
     PrintStream pStream = new PrintStream(outStream);
 
-    IView2 view = new NewCalendarView(new CalendarView(pStream));
+    IView view = new CalendarView(pStream);
     ZoneId newYork = ZoneId.of("America/New_York");
     IModel2 model2 = new MultipleCalendar("Basic", newYork, model);
 
