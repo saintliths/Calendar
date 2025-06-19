@@ -2,6 +2,7 @@ package calendarcontroller;
 
 import java.util.Scanner;
 
+import calendarmodel.Event;
 import calendarmodel.IModel2;
 import calendarview.IView;
 import calendarview.IView2;
@@ -11,7 +12,7 @@ import calendarview.IView2;
  */
 public class CalendarController implements IController {
   private final Readable in;
-  private final IView2 view;
+  private final IView view;
   private final IModel2 model;
 
   /**
@@ -21,10 +22,20 @@ public class CalendarController implements IController {
    * @param in    the user input
    * @param view  the view that is passed into this controller
    */
-  public CalendarController(IModel2 model, Readable in, IView2 view) {
+  public CalendarController(IModel2 model, Readable in, IView view) {
     this.model = model;
     this.view = view;
     this.in = in;
+
+  }
+
+  public void createEvent(String input) {
+    Event e = model.createEvent(input);
+    String name = e.getSubject();
+    String start = e.getStartTime().toString();
+    String end = e.getEndTime().toString();
+
+
 
   }
 
@@ -34,19 +45,17 @@ public class CalendarController implements IController {
     view.printOptions();
 
     Scanner input = new Scanner(in);
+    String in = input.nextLine();
 
-    if (in.equals("exit")) {
-      quit = true;
-    }
 
     while (!quit && input.hasNextLine()) {
-      String in = input.nextLine();
       if (in.startsWith("create event")) {
         if (in.contains("repeats")) {
           model.createEventSeries(in);
         } else {
           model.createEvent(in);
         }
+
 
       } else if (in.startsWith("edit event")) {
         model.editEvent(in);
@@ -80,6 +89,9 @@ public class CalendarController implements IController {
 
       } else if (in.startsWith("copy events between")) {
         model.copyEventsBetween(in);
+
+      } else if (in.equals("exit")) {
+        quit = true;
 
       } else {
         view.showOptionError();

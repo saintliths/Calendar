@@ -41,6 +41,7 @@ public class CalendarProgram {
       IView view1 = new CalendarView(System.out);
       IController controller = new CalendarController(model2, in, view1);
       controller.control();
+
     } else {
       Readable in = new InputStreamReader(System.in);
       IView2 view2 = new NewCalendarView(System.out);

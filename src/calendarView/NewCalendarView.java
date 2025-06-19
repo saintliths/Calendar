@@ -1,58 +1,59 @@
 package calendarview;
 
 import java.awt.*;
+import java.io.PrintStream;
 import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Random;
 
 import javax.swing.*;
 
-import calendarmodel.Event;
+import calendarcontroller.CalendarController;
+import calendarcontroller.IController;
 
 /**
  * Represents an implementation for the GUI view of the program.
  */
-public class NewCalendarView implements IView2 {
-  private JFrame frame;
-  private JPanel calendarPanel;
-  private JLabel monthLabel;
-  private JComboBox<String> calendarDropdown;
-  private Map<String, Color> calendars;
-  private Map<LocalDate, List<String>> events;
+public class NewCalendarView extends CalendarView implements IView2 {
+  private final JFrame frame;
+  private final JPanel calendarPanel;
+  private final JLabel monthLabel;
+  private final JComboBox<String> calendarDropdown;
+  private final Map<String, Color> calendars;
+  private final Map<LocalDate, List<String>> events;
   private YearMonth currentMonth;
   private String selectedCalendar;
-  private IView origView;
+  private PrintStream out;
 
   /**
    * Constructs a NewCalendarView object and builds the starter calendar view.
-   *
-   * @param origView the original IView interface
    */
-  public NewCalendarView(IView origView) {
-    this.origView = origView;
+  public NewCalendarView(PrintStream out) {
+    super(out);
     frame = new JFrame("Calendar App");
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frame.setSize(500, 500);
+    frame.setSize(600, 600);
     frame.setLayout(new BorderLayout());
 
     currentMonth = YearMonth.now();
     calendars = new HashMap<>();
     events = new HashMap<>();
     calendars.put("Default", Color.BLUE);
-//    calendars.put("Personal", Color.GREEN);
-//    calendars.put("Holidays", Color.RED);
     selectedCalendar = "Default";
 
     JPanel topPanel = new JPanel();
     JButton prevButton = new JButton("<");
     JButton nextButton = new JButton(">");
     JButton createCalendarButton = new JButton("Create Calendar");
-    JButton scheduleView = new  JButton("Schedule View");
+    JButton scheduleView = new JButton("Schedule View");
+//    JButton editEvent = new JButton("Edit Events");
+//    topPanel.add(editEvent);
     monthLabel = new JLabel();
     calendarDropdown = new JComboBox<>(calendars.keySet().toArray(new String[0]));
     topPanel.add(scheduleView);
@@ -68,19 +69,24 @@ public class NewCalendarView implements IView2 {
     frame.add(calendarPanel, BorderLayout.CENTER);
 
     scheduleView.addActionListener(e -> scheduleView());
+//    editEvent.addActionListener(e -> editEvents());
+    createCalendarButton.addActionListener(e -> createCalendar());
     prevButton.addActionListener(e -> changeMonth(-1));
     nextButton.addActionListener(e -> changeMonth(1));
     calendarDropdown.addActionListener(e -> changeCalendar());
-    
-    createCalendarButton.addActionListener(e -> createCalendar());
 
     updateCalendar();
     frame.setVisible(true);
   }
 
+  /**
+   * Shows the schedule view of a calendar with a specified start date.
+   */
   private void scheduleView() {
+    int count = 0;
     String start = JOptionPane
-            .showInputDialog(frame, "Enter start date:");
+            .showInputDialog(frame, "Enter start date:" + "\n"
+                    + "(Ex. 2025-06-01)");
 
     if (start == null) {
       return;
@@ -93,17 +99,36 @@ public class NewCalendarView implements IView2 {
       eventList.append("<html>");
 
       for (Map.Entry<LocalDate, List<String>> entry : events.entrySet()) {
+
         if (entry.getKey().isAfter(startDate)
                 || entry.getKey().isEqual(startDate)) {
-          eventList.append(events.get(entry.getKey())).append("<br>");
+          List<String> dayEvents = entry.getValue();
+
+          // header of the event date
+          boolean isHeader = false;
+
+          if (!dayEvents.isEmpty()) {
+
+            eventList.append(entry.getKey()).append(":<br>");
+            for (String event : dayEvents) {
+              if (count == 10) break;
+
+              if (!isHeader) {
+                isHeader = true;
+              }
+
+              eventList.append(entry.getKey()).append(" ").append(event).append("<br>");
+              count += 1;
+            }
+
+            if (count == 10) {
+              break;
+            }
+          }
         }
       }
 
       eventList.append("<html>");
-
-      if (eventList.length() > 10) {
-        eventList.delete(eventList.length() - 10, eventList.length());
-      }
 
       JLabel eventLabel = new JLabel(eventList.toString());
       JPanel panel = new JPanel();
@@ -114,13 +139,10 @@ public class NewCalendarView implements IView2 {
               JOptionPane.INFORMATION_MESSAGE);
     } else {
       JOptionPane.showMessageDialog(frame,
-              "Please enter time in HH:MM format (Military time)",
-              "Invalid Time Format",
+              "Please enter date in YYYY-MM-DD format",
+              "Invalid Date Format",
               JOptionPane.ERROR_MESSAGE);
     }
-
-
-
   }
 
   /**
@@ -129,11 +151,48 @@ public class NewCalendarView implements IView2 {
   private void createCalendar() {
     String name = JOptionPane
             .showInputDialog(frame, "Enter the name of the new calendar:");
-    calendars.put(name, Color.CYAN);
-    calendarDropdown.setSelectedIndex(0);
-    selectedCalendar = name;
-    updateCalendar();
+
+    if (name == null) {
+      return;
+    } else if (name.isEmpty()) {
+      JOptionPane.showMessageDialog(frame, "Please enter a valid calendar name",
+              "Invalid Name",
+              JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+
+    if (calendars.containsKey(name)) {
+      JOptionPane.showMessageDialog(frame,
+              "Calendar with the same name already exists", "Duplicate Name",
+              JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+
+    Random random = new Random();
+    Color randomColor = new Color(random.nextInt(256),
+            random.nextInt(256), random.nextInt(256));
+
+    calendars.put(name, randomColor);
+    calendarDropdown.removeAllItems();
+
+    for (String cal : calendars.keySet()) {
+      calendarDropdown.addItem(cal);
+    }
+
+    int switchCalendar = JOptionPane.showConfirmDialog(frame,
+            "Do you want to switch to this calendar?",
+            "Switch Calendar?",
+            JOptionPane.YES_NO_OPTION);
+
+    if (switchCalendar == JOptionPane.YES_OPTION) {
+      calendarDropdown.setSelectedItem(name);
+      selectedCalendar = name;
+      events.clear();
+      updateCalendar();
+    }
   }
+
+
 
   /**
    * Updates the calendar after a key press.
@@ -193,10 +252,8 @@ public class NewCalendarView implements IView2 {
           eventText.append(event).append("<br>");
         }
       }
-    } else {
-      // move the view down to view the most recent events,
-
     }
+
     eventText.append("<html>");
 
     JLabel eventLabel = new JLabel(eventText.toString());
@@ -212,17 +269,16 @@ public class NewCalendarView implements IView2 {
             JOptionPane.INFORMATION_MESSAGE);
   }
 
-//  private void showDetails() {}
+
+
   /**
-   * Creates the event upon a button press.
+   * Creates an event upon a button press, with optional fields a user can fill out also.
    *
-   * @param date the given date to create the event on
+   * @param date      the given date to create the event on
    * @param dayEvents the list of events already on that day
    */
   private void createEvent(LocalDate date, List<String> dayEvents) {
 
-    // 2. then the user inputs name, start time, end time, and optional fields such as
-    // description, location, isPrivate, etc.
 
     JTextField nameField = new JTextField();
     JTextField startField = new JTextField();
@@ -272,12 +328,30 @@ public class NewCalendarView implements IView2 {
       }
     }
 
-    String value = nameEvent + " " + startTime + "-" + endTime; // "Smiski 12:00-14:00
+    StringBuilder required = new StringBuilder();
 
+    required.append("<html>");
 
-    if (!value.trim().isEmpty() && !nameEvent.isEmpty()
-            && validFormat(startTime) && validFormat(endTime)) {
-      dayEvents.add(value.trim());
+    required.append(nameEvent).append(" ")
+            .append(startTime).append(" to ")
+            .append(endTime).append("<br>");
+    // "Smiski 12:00-14:00"
+
+    required.append("<html>");
+
+    StringBuilder optionals = new StringBuilder();
+
+    optionals.append("<html>");
+
+    optionals.append("Description: ").append(description.getText()).append("<br>");
+    optionals.append("Location: ").append(location.getText()).append("<br>");
+    optionals.append("Privacy: ")
+            .append(Objects.requireNonNull(privacy.getSelectedItem())).append("<br>");
+
+    optionals.append("<html>");
+
+    if (!nameEvent.isEmpty() && validFormat(startTime) && validFormat(endTime)) {
+      dayEvents.add(required + " " + optionals);
       events.put(date, dayEvents);
     }
 
@@ -307,6 +381,12 @@ public class NewCalendarView implements IView2 {
 
   }
 
+  /**
+   * Determines whether a date is in correct format.
+   *
+   * @param date the given date in String format
+   * @return true if the time is in valid format, false otherwise
+   */
   private boolean validDay(String date) {
     if (date.length() != 10 || (date.charAt(4) != '-' || date.charAt(7) != '-')) {
       return false;
@@ -319,28 +399,5 @@ public class NewCalendarView implements IView2 {
     }
 
     return true;
-  }
-
-  @Override
-  public void printOptions() {
-    this.origView.printOptions();
-  }
-
-  @Override
-  public void showStatus(String status) {
-    this.origView.showStatus(status);
-
-  }
-
-  @Override
-  public void printEvents(List<String> events) {
-    this.origView.printEvents(events);
-
-  }
-
-  @Override
-  public void showOptionError() {
-    this.origView.showOptionError();
-
   }
 }
